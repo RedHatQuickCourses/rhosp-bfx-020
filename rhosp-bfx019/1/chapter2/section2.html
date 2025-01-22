@@ -130,8 +130,211 @@
 </aside>
 <article class="doc">
 <h1 class="page">Guided solution (page 2 of 2)</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>FIXME: Provide step-by-step instructions here to resolve the issue.</p>
+<p>Connect to the workstation VM&#8217;s console to access the instance&#8217;s console</p>
+</div>
+<div class="paragraph">
+<p>Refer to the Access instance’s console instructions under Additional information section of Break-fix Activity page.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>From GUI console of workstation, connect to director VM and get the instance&#8217;s console URL</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ openstack console url show scenario-bfx020-vm
++-------+-----------------------------------------------------------------------------------------------+
+| Field | Value                                                                                         |
++-------+-----------------------------------------------------------------------------------------------+
+| type  | novnc                                                                                         |
+| url   | http://172.25.250.247:6080/vnc_auto.html?path=%3Ftoken%3D61a8cf42-1478-4047-9245-d3e1bfa55fcc |
++-------+-----------------------------------------------------------------------------------------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The preceding output can differ in your environment.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Click the link in the output of above command to access the instance&#8217;s console from workstation VM console web browser.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock unresolved">
+<div class="content">
+<img src="rhosp.png" alt="rhosp">
+</div>
+</div>
+<div class="paragraph">
+<p>You might see the No bootable device boot failure message, indicates the VM did not boot successfully.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use the openstack server show command to verify the details of the instance, particularly the image being utilized.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ openstack server show scenario-bfx020-vm
++-------------------------------------+---------------------------------------------------------------+
+| Field                               | Value                                                         |
++-------------------------------------+---------------------------------------------------------------+
+...output omitted...
+| image                               | scenario-bfx020-image (aef5b943-d9e1-4d6a-8ef5-df3e5721b2de)  |
+...output omitted...</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Inspect the image using openstack image show command.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ openstack image show scenario-bfx020-image
++-------------------------------------+-----------------------------------------+
+| Field                               | Value                                   |
++-------------------------------------+-----------------------------------------+
+...output omitted...
+| size                                | 0                                       |
+...output omitted...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the image size shows as zero bytes, it is likely a root cause of the boot failure.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To resolve this issue, begin by deleting the problematic server.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ openstack server delete scenario-bfx020-vm</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Recreate the instance, this time using the cirros image, which is a lightweight and commonly used image for testing purposes.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ openstack server create --image cirros-0.5.2-x86_64 --flavor m1.medium --key-name scenario-bfx020-key --nic net-id=scenario-bfx020-network --security-group scenario-bfx020-sg scenario-bfx020-vm</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get the floating IP for the newly created instance, enabling external access and communication.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ openstack floating ip list
++--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
+| ID                                   | Floating IP Address | Fixed IP Address | Port | Floating Network                     | Project                          |
++--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
+| 11290596-ad3e-4688-a791-5d12fa85c67b | 172.25.250.217      | None             | None | b2f70670-883c-44ed-9cd3-9be361430dc7 | 0192bf49efca46bf932847c75117578e |
++--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Floating IP in preceding output can differ in your environment.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Attach a floating IP to the newly created instance.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ openstack port list --server scenario-bfx020-vm
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+| ID                                   | Name | MAC Address       | Fixed IP Addresses                                                             | Status |
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+| 3f1e8f39-e3db-4f5b-aa00-ee4b46f56d6d |      | fa:16:3e:7a:68:f6 | ip_address='192.168.120.186', subnet_id='a587591a-1147-4c49-8d0d-32857a103a82' | ACTIVE |
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+
+(overcloud) [stack@director ~]$ openstack floating ip set --port 3f1e8f39-e3db-4f5b-aa00-ee4b46f56d6d 172.25.250.217</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The preceding output can differ in your environment.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Test the connectivity by attempting ICMP ping and SSH access to the instance.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ ping 172.25.250.217 -c 1
+PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
+64 bytes from 172.25.250.217: icmp_seq=1 ttl=63 time=4.77 ms
+
+--- 172.25.250.217 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 4.770/4.770/4.770/0.000 ms
+
+(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
+Warning: Permanently added '172.25.250.217' (ECDSA) to the list of known hosts.
+sign_and_send_pubkey: no mutual signature supported
+cirros@172.25.250.217's password:
+$ cat /etc/cirros/version
+0.5.2
+$ exit
+Connection to 172.25.250.217 closed.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify that these actions are successful, indicating that the instance created using the new image is now accessible.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_evaluation"><a class="anchor" href="#_evaluation"></a>Evaluation</h3>
+<div class="paragraph">
+<p>As the stack user on the director machine, use the lab command to grade your work. Correct any reported failures and rerun the command until successful.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[stack@director ~]$ lab grade bfx020</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_finish"><a class="anchor" href="#_finish"></a>Finish</h3>
+<div class="paragraph">
+<p>Run the lab finish command to complete this exercise. This step is important to ensure that resources from previous exercises do not impact upcoming exercises.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[stack@director ~]$ lab finish bfx020</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This concludes the section.</p>
+</div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="section1.html">Guided solution (page 1 of 2)</a></span>

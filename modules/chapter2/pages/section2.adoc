@@ -110,6 +110,5 @@ Run the lab finish command to complete this exercise. This step is important to 
 ----
 [stack@director ~]$ lab finish bfx020
 ----
-This concludes the section.
-
+This concludes this section.
 

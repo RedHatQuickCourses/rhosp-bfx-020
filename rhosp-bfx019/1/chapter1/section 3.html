@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab Environment :: RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</title>
+    <title>Break-fix Scenario :: RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</title>
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -45,7 +45,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
   </li>
 </ul>
   </li>
@@ -53,13 +53,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter1/index.html">What’s in this break-fix?</a>
+    <a class="nav-link" href="index.html">What’s in this break-fix?</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter1/section1.html">Break-fix activity</a>
+    <a class="nav-link" href="section1.html">Break-fix activity</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter1/section2.html">Check your work</a>
+    <a class="nav-link" href="section2.html">Check your work</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="#section3.adoc">section3.adoc</a>
@@ -120,7 +120,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</a></li>
-    <li><a href="index-lab-other.html">Lab Environment</a></li>
+    <li><a href="section%203.html">Break-fix Scenario</a></li>
   </ul>
 </nav>
 </div>
@@ -129,9 +129,84 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab Environment</h1>
+<h1 class="page">Break-fix Scenario</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>FIXME: Instructions for accessing the lab environment on any other platform, for this hands-on based training.</p>
+<p>Objectives:
+* Investigate the instance connectivity issue in Red Hat OpenStack Platform.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Solve the instance connectivity in the hands-on lab environment.</p>
+</li>
+<li>
+<p>Familarize with Distributed Virtual Routing (DVR) Functionality.</p>
+</li>
+<li>
+<p>Derive the tap interface name.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Scenario:
+Your team manages a Red Hat OpenStack Platform (RHOSP) infrastructure used by an important development team for your company. There was a requirement from your internal networking team to have Open Virtual Network (OVN), an open-source software-defined networking (SDN) solution that seamlessly integrates with OpenStack. Recently networking team noticed that there is connectivity issue with instance running in OpenStack envrionment.</p>
+</div>
+<div class="paragraph">
+<p>They noticed the following error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
+ssh: connect to host 172.25.250.217 port 22: Connection timed out</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the preceding output, ip address can differ in your lab environemnt.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_recreate_scenario"><a class="anchor" href="#_recreate_scenario"></a>Recreate scenario</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Recreate this scenario by running the lab script on director VM as stack user:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[student@workstation ~]$ ssh stack@director
+
+[stack@director ~]$ source overcloudrc
+
+(overcloud) [stack@director ~]$ lab start bfx020
+Running start action against scenario bfx020
+Run the following command:
+ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the preceding output, ip address can differ in your lab environemnt.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>This breaks the connectivity to instance.</p>
+</li>
+<li>
+<p>To ensure scenario is recreated, run the ssh command from the previous output:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
+ssh: connect to host 172.25.250.217 port 22: Connection timed out</pre>
+</div>
+</div>
 </div>
 </article>
   </div>

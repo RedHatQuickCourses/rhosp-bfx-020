@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Guided solution (page 2 of 2) :: RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</title>
     <link rel="prev" href="section1.html">
-    <link rel="next" href="../appendix/appendix.html">
+    <link rel="next" href="../chapter3/section1.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -64,7 +64,7 @@
     <a class="nav-link" href="../chapter1/section2.html">Check your work</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#section3.adoc">section3.adoc</a>
+    <a class="nav-link" href="../chapter1/section3.html">section3.adoc</a>
   </li>
 </ul>
   </li>
@@ -83,6 +83,13 @@
     <a class="nav-link" href="section2.html">Guided solution (page 2 of 2)</a>
   </li>
 </ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section1.html">Summary</a>
   </li>
 </ul>
   </li>
@@ -145,9 +152,6 @@
 <ol class="arabic">
 <li>
 <p>From GUI console of workstation, connect to director VM and get the instance&#8217;s console URL</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ openstack console url show scenario-bfx020-vm
@@ -162,28 +166,20 @@
 <div class="paragraph">
 <p>The preceding output can differ in your environment.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Click the link in the output of above command to access the instance&#8217;s console from workstation VM console web browser.</p>
-</li>
-</ol>
-</div>
-<div class="imageblock unresolved">
+<div class="imageblock">
 <div class="content">
-<img src="rhosp.png" alt="rhosp">
+<img src="_images/RHOSP.png" alt="RHOSP">
 </div>
 </div>
 <div class="paragraph">
 <p>You might see the No bootable device boot failure message, indicates the VM did not boot successfully.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Use the openstack server show command to verify the details of the instance, particularly the image being utilized.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ openstack server show scenario-bfx020-vm
@@ -195,13 +191,9 @@
 ...output omitted...</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Inspect the image using openstack image show command.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ openstack image show scenario-bfx020-image
@@ -216,37 +208,25 @@
 <div class="paragraph">
 <p>Note that the image size shows as zero bytes, it is likely a root cause of the boot failure.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>To resolve this issue, begin by deleting the problematic server.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ openstack server delete scenario-bfx020-vm</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Recreate the instance, this time using the cirros image, which is a lightweight and commonly used image for testing purposes.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ openstack server create --image cirros-0.5.2-x86_64 --flavor m1.medium --key-name scenario-bfx020-key --nic net-id=scenario-bfx020-network --security-group scenario-bfx020-sg scenario-bfx020-vm</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Get the floating IP for the newly created instance, enabling external access and communication.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ openstack floating ip list
@@ -260,13 +240,9 @@
 <div class="paragraph">
 <p>Floating IP in preceding output can differ in your environment.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Attach a floating IP to the newly created instance.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ openstack port list --server scenario-bfx020-vm
@@ -282,13 +258,9 @@
 <div class="paragraph">
 <p>The preceding output can differ in your environment.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Test the connectivity by attempting ICMP ping and SSH access to the instance.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ ping 172.25.250.217 -c 1
@@ -312,12 +284,17 @@ Connection to 172.25.250.217 closed.</pre>
 <div class="paragraph">
 <p>Verify that these actions are successful, indicating that the instance created using the new image is now accessible.</p>
 </div>
+</li>
+</ol>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_evaluation"><a class="anchor" href="#_evaluation"></a>Evaluation</h3>
+</div>
+<div class="sect1">
+<h2 id="_evaluation"><a class="anchor" href="#_evaluation"></a>Evaluation</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>As the stack user on the director machine, use the lab command to grade your work. Correct any reported failures and rerun the command until successful.</p>
+<p>+
+As the stack user on the director machine, use the lab command to grade your work. Correct any reported failures and rerun the command until successful.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -325,10 +302,13 @@ Connection to 172.25.250.217 closed.</pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_finish"><a class="anchor" href="#_finish"></a>Finish</h3>
+</div>
+<div class="sect1">
+<h2 id="_finish"><a class="anchor" href="#_finish"></a>Finish</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Run the lab finish command to complete this exercise. This step is important to ensure that resources from previous exercises do not impact upcoming exercises.</p>
+<p>+
+Run the lab finish command to complete this exercise. This step is important to ensure that resources from previous exercises do not impact upcoming exercises.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -339,9 +319,10 @@ Connection to 172.25.250.217 closed.</pre>
 <p>This concludes this section.</p>
 </div>
 </div>
+</div>
 <nav class="pagination">
   <span class="prev"><a href="section1.html">Guided solution (page 1 of 2)</a></span>
-  <span class="next"><a href="../appendix/appendix.html">Appendix</a></span>
+  <span class="next"><a href="../chapter3/section1.html">Summary</a></span>
 </nav>
 </article>
   </div>

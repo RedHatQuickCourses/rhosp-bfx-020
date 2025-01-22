@@ -1,1 +1,35 @@
 = Summary
+
+Checke ARP Cache:
+
+* Reviewed the ARP cache on the client system (director VM) initiating the connection.
+
+* Identified an entry in the ARP cache, confirming ARP functionality.
+
+Find where the packet gets lost:
+
+* Executed tcpdump on the compute node's network interface associated with the br-ex bridge.
+
+* Observed incoming ICMP echo requests but noted the absence of reply packets.
+
+* Located the tap interface connected to the instance.
+
+* Performed tcpdump on this tap interface.
+
+* Discovered that ICMP echo requests reaching to the tap interface as well
+
+* No problem with network path and connectivity mechanisms.
+
+* It appeared that the virtual machine (VM) failed to generate a reply when the echo request reached it.
+
+Examine VM's Console:
+
+* Accessed the VM's console to delve deeper into the issue.
+
+* Observed a boot failure message and the absence of an operating system on the instance.
+
+Inspect Image Used:
+
+* Identified the image utilized by the instance.
+
+* Examined the image and discovered its size was recorded as zero.

@@ -1,4 +1,4 @@
-= Break-fix Scenario
+== Break-fix Scenario
 
 Objectives:
 * Investigate the instance connectivity issue in Red Hat OpenStack Platform.

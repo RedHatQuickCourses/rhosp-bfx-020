@@ -10,7 +10,7 @@
 
 == Instructions
 
-1. Break the environment if you have not done it and step through the fix.
+* Break the environment if you have not done it and step through the fix.
 ----
 [student@workstation ~]$ ssh student@director
 Warning: Permanently added 'director' (ED25519) to the list of known hosts.
@@ -38,7 +38,7 @@ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@1
 You need single instance of the lab environment to perorm all the break-fix activities in this series.
 ====
 
-2. Run the ssh command from the previous lab command output and notice the Connection timed out error. Also run the ping command against instance IP.
+* Run the ssh command from the previous lab command output and notice the Connection timed out error. Also run the ping command against instance IP.
 ----
 (overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.breakfix020/breakfix020-key.pem cirros@172.25.250.217
 ssh: connect to host 172.25.250.217 port 22: Connection timed out
@@ -51,7 +51,7 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 ----
 You observe that both ping and ssh attempts failed which indicates lack of connectivity.
 
-3. Access the overcloud environment and determine the specific compute VM where the instance is currently running.
+* Access the overcloud environment and determine the specific compute VM where the instance is currently running.
 ----
 (overcloud) [stack@director ~]$ openstack server list --long -c Name -c Status -c Networks -c Host
 +--------------------+--------+---------------------------------------------------------+-------------------------------------+
@@ -63,7 +63,7 @@ You observe that both ping and ssh attempts failed which indicates lack of conne
 Host in the preceding output can differ in your environment.
 scenario-bfx020-vm is running on the overcloud-novacompute-1 host.
 
-4. Examine the ARP cache on the director VM and look for the details of the inaccessible OpenStack instance.
+* Examine the ARP cache on the director VM and look for the details of the inaccessible OpenStack instance.
 ----
 (overcloud) [stack@director ~]$ ip neighbor | grep 172.25.250.217
 172.25.250.217 dev eth0 lladdr fa:16:3e:06:d9:00 STALE
@@ -72,7 +72,7 @@ An entry with the floating IP associated with a MAC address, indicating successf
 This signifies functional communication via ARP, but ICMP communication remains problematic.
 Proceed to verify whether the packets are being correctly routed to the appropriate VM.
 
-5. Open an another terminal and run the ssh command to log in to the compute VM where the instance is hosted.
+* Open an another terminal and run the ssh command to log in to the compute VM where the instance is hosted.
 
 Run the ovs-vsctl show command to find the interface associated with the external bridge br-ex.
 ----
@@ -109,7 +109,7 @@ Last login: Fri Jan 26 12:15:25 2024 from 172.25.249.11
 ----
 Interface in the preceding output can differ in your environment.
 
-6. To verify incoming traffic, initiate a tcpdump on above interface on the compute VM and try to ping the instance from another terminal from the director VM.
+* To verify incoming traffic, initiate a tcpdump on above interface on the compute VM and try to ping the instance from another terminal from the director VM.
 ----
 [root@overcloud-novacompute-1 ~]# tcpdump -envvi ens4 icmp
 dropped privs to tcpdump
@@ -137,7 +137,7 @@ The presence of ICMP echo requests reaching the external NIC on the compute VM i
 
 However, observe that echo requests are not receiving the echo replies on the director VM.
 
-7. Determine the tap interface used for the instance on the compute VM.
+* Determine the tap interface used for the instance on the compute VM.
 ----
 (overcloud) [stack@director ~]$ openstack port list --server scenario-bfx020-vm
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
@@ -150,14 +150,14 @@ The preceding output can differ in your environment.
 The tap interface name is tap<initial part of port ID>. Refer to the Additional Information page for more details.
 Here tap interface name is tap32311030-70.
 
-8. Run ip l show command on compute VM.
+* Run ip l show command on compute VM.
 ----
 [root@overcloud-novacompute-1 ~]# ip l show tap32311030-70
 18: tap32311030-70: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1442 qdisc noqueue master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
     link/ether fe:16:3e:42:bb:e3 brd ff:ff:ff:ff:ff:ff
 ----
 
-9. Initiate a tcpdump on tap interface on the compute VM and try to ping the instance from another terminal from the director VM.
+* Initiate a tcpdump on tap interface on the compute VM and try to ping the instance from another terminal from the director VM.
 ----
 [root@overcloud-novacompute-1 ~]# tcpdump -envvi tap32311030-70
 dropped privs to tcpdump

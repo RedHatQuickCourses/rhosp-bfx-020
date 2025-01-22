@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Untitled :: RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</title>
+    <title>Break-fix Scenario :: RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</title>
     <link rel="prev" href="section2.html">
     <link rel="next" href="../chapter2/index.html">
     <meta name="generator" content="Antora 3.1.3">
@@ -64,7 +64,7 @@
     <a class="nav-link" href="section2.html">Check your work</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="section3.html">section3.adoc</a>
+    <a class="nav-link" href="section3.html">Break-fix Scenario</a>
   </li>
 </ul>
   </li>
@@ -123,7 +123,7 @@
   <ul>
     <li><a href="../index.html">RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</a></li>
     <li><a href="index.html">What’s in this break-fix?</a></li>
-    <li><a href="section3.html">section3.adoc</a></li>
+    <li><a href="section3.html">Break-fix Scenario</a></li>
   </ul>
 </nav>
 </div>
@@ -132,8 +132,8 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<div class="sect1">
-<h2 id="_break_fix_scenario"><a class="anchor" href="#_break_fix_scenario"></a>Break-fix Scenario</h2>
+<h1 class="page">Break-fix Scenario</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Objectives:</p>
@@ -169,6 +169,8 @@ ssh: connect to host 172.25.250.217 port 22: Connection timed out</pre>
 </div>
 <div class="paragraph">
 <p>In the preceding output, ip address can differ in your lab environemnt.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_recreate_scenario"><a class="anchor" href="#_recreate_scenario"></a>Recreate scenario</h3>
@@ -208,8 +210,6 @@ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@1
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
 ssh: connect to host 172.25.250.217 port 22: Connection timed out</pre>
-</div>
-</div>
 </div>
 </div>
 </div>

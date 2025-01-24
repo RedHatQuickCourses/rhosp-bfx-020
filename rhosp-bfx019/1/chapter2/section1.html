@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Guided solution (page 1 of 2) :: RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</title>
+    <title>Guided solution (page 1) :: RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</title>
     <link rel="prev" href="index.html">
     <link rel="next" href="section2.html">
     <meta name="generator" content="Antora 3.1.3">
@@ -77,7 +77,7 @@
     <a class="nav-link" href="index.html">Guided solution</a>
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="section1.html">Guided solution (page 1 of 2)</a>
+    <a class="nav-link" href="section1.html">Guided solution (page 1)</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="section2.html">Guided solution (page 2)</a>
@@ -123,7 +123,7 @@
   <ul>
     <li><a href="../index.html">RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</a></li>
     <li><a href="index.html">Guided solution</a></li>
-    <li><a href="section1.html">Guided solution (page 1 of 2)</a></li>
+    <li><a href="section1.html">Guided solution (page 1)</a></li>
   </ul>
 </nav>
 </div>
@@ -132,7 +132,7 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Guided solution (page 1 of 2)</h1>
+<h1 class="page">Guided solution (page 1)</h1>
 <div class="sect1">
 <h2 id="_objectives"><a class="anchor" href="#_objectives"></a>Objectives</h2>
 <div class="sectionbody">
@@ -239,7 +239,8 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 </div>
 </div>
 <div class="paragraph">
-<p>Host in the preceding output can differ in your environment. scenario-bfx020-vm is running on the overcloud-novacompute-1 host.</p>
+<p>Host in the preceding output can differ in your environment.
+scenario-bfx020-vm is running on the overcloud-novacompute-1 host.</p>
 </div>
 </li>
 <li>
@@ -258,9 +259,9 @@ Proceed to verify whether the packets are being correctly routed to the appropri
 </li>
 <li>
 <p>Open an another terminal and run the ssh command to log in to the compute VM where the instance is hosted.</p>
-</li>
-<li>
+<div class="paragraph">
 <p>Run the ovs-vsctl show command to find the interface associated with the external bridge br-ex.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>[student@workstation ~]$ ssh student@director
@@ -324,18 +325,10 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 3 packets transmitted, 0 received, 100% packet loss, time 2067ms</pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Observe that ICMP echo requests arriving at the VM.</p>
-</li>
-<li>
-<p>The presence of ICMP echo requests reaching the external NIC on the compute VM indicates the proper functioning of the Distributed Virtual Router (DVR).</p>
-</li>
-<li>
-<p>However, observe that echo requests are not receiving the echo replies on the director VM.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>Observe that ICMP echo requests arriving at the VM.
+The presence of ICMP echo requests reaching the external NIC on the compute VM indicates the proper functioning of the Distributed Virtual Router (DVR).
+However, observe that echo requests are not receiving the echo replies on the director VM.</p>
 </div>
 </li>
 <li>
@@ -350,18 +343,10 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+</pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>The preceding output can differ in your environment.</p>
-</li>
-<li>
-<p>The tap interface name is tap&lt;initial part of port ID&gt;. Refer to the Additional information page for more details.</p>
-</li>
-<li>
-<p>Here tap interface name is tap32311030-70.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The preceding output can differ in your environment.
+The tap interface name is tap&lt;initial part of port ID&gt;. Refer to the Additional Information page for more details.
+Here tap interface name is tap32311030-70.</p>
 </div>
 </li>
 <li>
@@ -402,17 +387,14 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 <div class="paragraph">
 <p>Successful delivery of the echo request to the tap interface linked with the instance indicates that the network path and connectivity mechanisms are operating correctly.</p>
 </div>
+</li>
+</ol>
+</div>
 <div class="paragraph">
 <p>All indicators appear satisfactory from the Neutron perspective. The underlying networking infrastructure, including OVN components, is functioning as intended.</p>
 </div>
 <div class="paragraph">
-<p>It appeared that the virtual machine (VM) failed to generate a reply when the echo request reached it. The problem might reside within the VM internal configuration or its behavior towards incoming requests. Access the instance&#8217;s console for further investigation on this issue.</p>
-</div>
-</li>
-<li>
-<p>next step</p>
-</li>
-</ol>
+<p>It appeared that the virtual machine (VM) failed to generate a reply when the echo request reached it. The problem might reside within the VM internal configuration or its behavior towards the incoming requests. Access the instance&#8217;s console for further investigation on this issue.</p>
 </div>
 </div>
 </div>

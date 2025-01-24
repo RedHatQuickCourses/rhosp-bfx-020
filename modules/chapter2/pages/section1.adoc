@@ -1,4 +1,4 @@
-= Guided solution (page 1 of 2)
+= Guided solution (page 1)
 
 == Objectives
 * Investigate the instance connectivity issue in Red Hat OpenStack Platform.
@@ -10,8 +10,7 @@
 
 == Instructions
 
-
-. Break the environment if you have not done it and step through the fix.
+1. Break the environment if you have not done it and step through the fix.
 +
 ----
 [student@workstation ~]$ ssh student@director
@@ -40,7 +39,7 @@ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@1
 You need single instance of the lab environment to perorm all the break-fix activities in this series.
 ====
 
-. Run the ssh command from the previous lab command output and notice the Connection timed out error. Also run the ping command against instance IP.
+2. Run the ssh command from the previous lab command output and notice the Connection timed out error. Also run the ping command against instance IP.
 +
 ----
 (overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.breakfix020/breakfix020-key.pem cirros@172.25.250.217
@@ -54,7 +53,7 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 ----
 You observe that both ping and ssh attempts failed which indicates lack of connectivity.
 
-. Access the overcloud environment and determine the specific compute VM where the instance is currently running.
+3. Access the overcloud environment and determine the specific compute VM where the instance is currently running.
 +
 ----
 (overcloud) [stack@director ~]$ openstack server list --long -c Name -c Status -c Networks -c Host
@@ -65,9 +64,10 @@ You observe that both ping and ssh attempts failed which indicates lack of conne
 +--------------------+--------+---------------------------------------------------------+-------------------------------------+
 ----
 +
-Host in the preceding output can differ in your environment. scenario-bfx020-vm is running on the overcloud-novacompute-1 host.
+Host in the preceding output can differ in your environment.
+scenario-bfx020-vm is running on the overcloud-novacompute-1 host.
 
-. Examine the ARP cache on the director VM and look for the details of the inaccessible OpenStack instance.
+4. Examine the ARP cache on the director VM and look for the details of the inaccessible OpenStack instance.
 +
 ----
 (overcloud) [stack@director ~]$ ip neighbor | grep 172.25.250.217
@@ -77,9 +77,9 @@ An entry with the floating IP associated with a MAC address, indicating successf
 This signifies functional communication via ARP, but ICMP communication remains problematic.
 Proceed to verify whether the packets are being correctly routed to the appropriate VM.
 
-. Open an another terminal and run the ssh command to log in to the compute VM where the instance is hosted.
-
-. Run the ovs-vsctl show command to find the interface associated with the external bridge br-ex.
+5. Open an another terminal and run the ssh command to log in to the compute VM where the instance is hosted.
++
+Run the ovs-vsctl show command to find the interface associated with the external bridge br-ex.
 +
 ----
 [student@workstation ~]$ ssh student@director
@@ -116,7 +116,7 @@ Last login: Fri Jan 26 12:15:25 2024 from 172.25.249.11
 +
 Interface in the preceding output can differ in your environment.
 
-. To verify incoming traffic, initiate a tcpdump on above interface on the compute VM and try to ping the instance from another terminal from the director VM.
+6. To verify incoming traffic, initiate a tcpdump on above interface on the compute VM and try to ping the instance from another terminal from the director VM.
 +
 ----
 [root@overcloud-novacompute-1 ~]# tcpdump -envvi ens4 icmp
@@ -140,11 +140,11 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 3 packets transmitted, 0 received, 100% packet loss, time 2067ms
 ----
 +
-- Observe that ICMP echo requests arriving at the VM.
-- The presence of ICMP echo requests reaching the external NIC on the compute VM indicates the proper functioning of the Distributed Virtual Router (DVR).
-- However, observe that echo requests are not receiving the echo replies on the director VM.
+Observe that ICMP echo requests arriving at the VM.
+The presence of ICMP echo requests reaching the external NIC on the compute VM indicates the proper functioning of the Distributed Virtual Router (DVR).
+However, observe that echo requests are not receiving the echo replies on the director VM.
 
-. Determine the tap interface used for the instance on the compute VM.
+7. Determine the tap interface used for the instance on the compute VM.
 +
 ----
 (overcloud) [stack@director ~]$ openstack port list --server scenario-bfx020-vm
@@ -154,12 +154,11 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 | 32311030-701f-462b-bc64-899e67ad6e78 |      | fa:16:3e:42:bb:e3 | ip_address='192.168.120.152', subnet_id='a587591a-1147-4c49-8d0d-32857a103a82' | ACTIVE |
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
 ----
-+
-- The preceding output can differ in your environment.
-- The tap interface name is tap<initial part of port ID>. Refer to the Additional information page for more details.
-- Here tap interface name is tap32311030-70.
+The preceding output can differ in your environment.
+The tap interface name is tap<initial part of port ID>. Refer to the Additional Information page for more details.
+Here tap interface name is tap32311030-70.
 
-. Run ip l show command on compute VM.
+8. Run ip l show command on compute VM.
 +
 ----
 [root@overcloud-novacompute-1 ~]# ip l show tap32311030-70
@@ -167,7 +166,7 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
     link/ether fe:16:3e:42:bb:e3 brd ff:ff:ff:ff:ff:ff
 ----
 
-. Initiate a tcpdump on tap interface on the compute VM and try to ping the instance from another terminal from the director VM.
+9. Initiate a tcpdump on tap interface on the compute VM and try to ping the instance from another terminal from the director VM.
 +
 ----
 [root@overcloud-novacompute-1 ~]# tcpdump -envvi tap32311030-70
@@ -190,11 +189,12 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 --- 172.25.250.217 ping statistics ---
 3 packets transmitted, 0 received, 100% packet loss, time 2044ms
 ----
-+
 Successful delivery of the echo request to the tap interface linked with the instance indicates that the network path and connectivity mechanisms are operating correctly.
-+
-All indicators appear satisfactory from the Neutron perspective. The underlying networking infrastructure, including OVN components, is functioning as intended.
-+
-It appeared that the virtual machine (VM) failed to generate a reply when the echo request reached it. The problem might reside within the VM internal configuration or its behavior towards incoming requests. Access the instance's console for further investigation on this issue.
 
-. next step
+All indicators appear satisfactory from the Neutron perspective. The underlying networking infrastructure, including OVN components, is functioning as intended.
+
+It appeared that the virtual machine (VM) failed to generate a reply when the echo request reached it. The problem might reside within the VM internal configuration or its behavior towards the incoming requests. Access the instance's console for further investigation on this issue.
+
+
+
+

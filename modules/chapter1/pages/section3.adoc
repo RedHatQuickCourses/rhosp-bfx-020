@@ -14,12 +14,12 @@ Scenario:
 Your team manages a Red Hat OpenStack Platform (RHOSP) infrastructure used by an important development team for your company. There was a requirement from your internal networking team to have Open Virtual Network (OVN), an open-source software-defined networking (SDN) solution that seamlessly integrates with OpenStack. Recently networking team noticed that there is connectivity issue with instance running in OpenStack envrionment.
 
 They noticed the following error:
-+
+
 ----
 (overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
 ssh: connect to host 172.25.250.217 port 22: Connection timed out
 ----
-+
+
 In the preceding output, ip address can differ in your lab environemnt.
 
 == Recreate scenario
@@ -35,7 +35,7 @@ Running start action against scenario bfx020
 Run the following command:
 ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
 ----
-+
+
 In the preceding output, ip address can differ in your lab environemnt.
 
 * This breaks the connectivity to instance.

@@ -1,4 +1,4 @@
-= Guided solution (page 2 of 2)
+= Guided solution (page 2)
 
 Connect to the workstation VM's console to access the instance's console
 
@@ -109,14 +109,14 @@ Connection to 172.25.250.217 closed.
 Verify that these actions are successful, indicating that the instance created using the new image is now accessible.
 
 == Evaluation
-+
+
 As the stack user on the director machine, use the lab command to grade your work. Correct any reported failures and rerun the command until successful.
 ----
 [stack@director ~]$ lab grade bfx020
 ----
 
 == Finish
-+
+
 Run the lab finish command to complete this exercise. This step is important to ensure that resources from previous exercises do not impact upcoming exercises.
 ----
 [stack@director ~]$ lab finish bfx020

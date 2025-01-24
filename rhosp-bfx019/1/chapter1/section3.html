@@ -80,7 +80,7 @@
     <a class="nav-link" href="../chapter2/section1.html">Guided solution (page 1 of 2)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter2/section2.html">Guided solution (page 2 of 2)</a>
+    <a class="nav-link" href="../chapter2/section2.html">Guided solution (page 2)</a>
   </li>
 </ul>
   </li>
@@ -161,6 +161,9 @@ Your team manages a Red Hat OpenStack Platform (RHOSP) infrastructure used by an
 <div class="paragraph">
 <p>They noticed the following error:</p>
 </div>
+<div class="paragraph">
+<p>+</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
@@ -168,12 +171,14 @@ ssh: connect to host 172.25.250.217 port 22: Connection timed out</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the preceding output, ip address can differ in your lab environemnt.</p>
+<p>+
+In the preceding output, ip address can differ in your lab environemnt.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_recreate_scenario"><a class="anchor" href="#_recreate_scenario"></a>Recreate scenario</h3>
+<div class="sect1">
+<h2 id="_recreate_scenario"><a class="anchor" href="#_recreate_scenario"></a>Recreate scenario</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
@@ -194,7 +199,8 @@ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@1
 </div>
 </div>
 <div class="paragraph">
-<p>In the preceding output, ip address can differ in your lab environemnt.</p>
+<p>+
+In the preceding output, ip address can differ in your lab environemnt.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -203,13 +209,14 @@ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@1
 </li>
 <li>
 <p>To ensure scenario is recreated, run the ssh command from the previous output:</p>
-</li>
-</ul>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
 ssh: connect to host 172.25.250.217 port 22: Connection timed out</pre>
+</div>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>

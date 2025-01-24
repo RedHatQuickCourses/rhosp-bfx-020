@@ -210,9 +210,6 @@ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@1
 </li>
 <li>
 <p>Run the ssh command from the previous lab command output and notice the Connection timed out error. Also run the ping command against instance IP.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.breakfix020/breakfix020-key.pem cirros@172.25.250.217
@@ -228,8 +225,7 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 <div class="paragraph">
 <p>You observe that both ping and ssh attempts failed which indicates lack of connectivity.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Access the overcloud environment and determine the specific compute VM where the instance is currently running.</p>
 <div class="listingblock">
@@ -243,15 +239,11 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 </div>
 </div>
 <div class="paragraph">
-<p>Host in the preceding output can differ in your environment.
-scenario-bfx020-vm is running on the overcloud-novacompute-1 host.</p>
+<p>Host in the preceding output can differ in your environment. scenario-bfx020-vm is running on the overcloud-novacompute-1 host.</p>
 </div>
 </li>
 <li>
 <p>Examine the ARP cache on the director VM and look for the details of the inaccessible OpenStack instance.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ ip neighbor | grep 172.25.250.217
@@ -263,16 +255,12 @@ scenario-bfx020-vm is running on the overcloud-novacompute-1 host.</p>
 This signifies functional communication via ARP, but ICMP communication remains problematic.
 Proceed to verify whether the packets are being correctly routed to the appropriate VM.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Open an another terminal and run the ssh command to log in to the compute VM where the instance is hosted.</p>
 </li>
-</ol>
-</div>
-<div class="paragraph">
+<li>
 <p>Run the ovs-vsctl show command to find the interface associated with the external bridge br-ex.</p>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>[student@workstation ~]$ ssh student@director
@@ -310,13 +298,9 @@ Last login: Fri Jan 26 12:15:25 2024 from 172.25.249.11
 <div class="paragraph">
 <p>Interface in the preceding output can differ in your environment.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>To verify incoming traffic, initiate a tcpdump on above interface on the compute VM and try to ping the instance from another terminal from the director VM.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>[root@overcloud-novacompute-1 ~]# tcpdump -envvi ens4 icmp
@@ -340,22 +324,22 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 3 packets transmitted, 0 received, 100% packet loss, time 2067ms</pre>
 </div>
 </div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Observe that ICMP echo requests arriving at the VM.</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>The presence of ICMP echo requests reaching the external NIC on the compute VM indicates the proper functioning of the Distributed Virtual Router (DVR).</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>However, observe that echo requests are not receiving the echo replies on the director VM.</p>
+</li>
+</ul>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Determine the tap interface used for the instance on the compute VM.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>(overcloud) [stack@director ~]$ openstack port list --server scenario-bfx020-vm
@@ -366,18 +350,22 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>The preceding output can differ in your environment.
-The tap interface name is tap&lt;initial part of port ID&gt;. Refer to the Additional Information page for more details.
-Here tap interface name is tap32311030-70.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The preceding output can differ in your environment.</p>
+</li>
+<li>
+<p>The tap interface name is tap&lt;initial part of port ID&gt;. Refer to the Additional information page for more details.</p>
+</li>
+<li>
+<p>Here tap interface name is tap32311030-70.</p>
+</li>
+</ul>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Run ip l show command on compute VM.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>[root@overcloud-novacompute-1 ~]# ip l show tap32311030-70
@@ -385,13 +373,9 @@ Here tap interface name is tap32311030-70.</p>
     link/ether fe:16:3e:42:bb:e3 brd ff:ff:ff:ff:ff:ff</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Initiate a tcpdump on tap interface on the compute VM and try to ping the instance from another terminal from the director VM.</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>[root@overcloud-novacompute-1 ~]# tcpdump -envvi tap32311030-70
@@ -423,6 +407,12 @@ PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
 </div>
 <div class="paragraph">
 <p>It appeared that the virtual machine (VM) failed to generate a reply when the echo request reached it. The problem might reside within the VM internal configuration or its behavior towards incoming requests. Access the instance&#8217;s console for further investigation on this issue.</p>
+</div>
+</li>
+<li>
+<p>next step</p>
+</li>
+</ol>
 </div>
 </div>
 </div>

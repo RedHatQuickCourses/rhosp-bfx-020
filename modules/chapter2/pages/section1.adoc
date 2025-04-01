@@ -13,25 +13,17 @@
 1. Break the environment if you have not done it and step through the fix.
 +
 ----
-[student@workstation ~]$ ssh student@director
-Warning: Permanently added 'director' (ED25519) to the list of known hosts.
-student@director's password:
-Activate the web console with: systemctl enable --now cockpit.socket
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
 
-Register this system with Red Hat Insights: insights-client --register
-Create an account or view all your systems at https://red.ht/insights-dashboard
-Last login: Fri Jan 26 10:45:39 2024 from 172.25.252.254
+You have access to 76 projects, the list has been suppressed. You can list all projects with 'oc projects'
 
-[student@director ~]$ sudo su - stack
-[sudo] password for student:
-Last login: Thu Feb 29 10:37:46 EST 2024 from 172.25.250.9 on pts/0
+Using project "openstack".
 
-[stack@director ~]$ source overcloudrc
-
-(overcloud) [stack@director ~]$ lab start bfx020
+[student@workstation ~]$ lab start bfx020
 Running start action against scenario bfx020
 Run the following command:
-ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
+ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.181
 ----
 +
 [NOTE]
@@ -42,36 +34,44 @@ You need single instance of the lab environment to perorm all the break-fix acti
 2. Run the ssh command from the previous lab command output and notice the Connection timed out error. Also run the ping command against instance IP.
 +
 ----
-(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.breakfix020/breakfix020-key.pem cirros@172.25.250.217
-ssh: connect to host 172.25.250.217 port 22: Connection timed out
+[student@workstation ~]$ ssh -i /home/student/osp_training/.breakfix020/breakfix020-key.pem cirros@192.168.51.181
+ssh: connect to host 192.168.51.181 port 22: Connection timed out
 
-(overcloud) [stack@director ~]$ ping 172.25.250.217 -c 1
-PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
+[student@workstation ~]$ ping 192.168.51.181 -c 1
+PING 192.168.51.181 (192.168.51.181) 56(84) bytes of data.
 
---- 172.25.250.217 ping statistics ---
+--- 192.168.51.181 ping statistics ---
 1 packets transmitted, 0 received, 100% packet loss, time 0ms
 ----
 You observe that both ping and ssh attempts failed which indicates lack of connectivity.
 
-3. Access the overcloud environment and determine the specific compute VM where the instance is currently running.
+3. Access the RHOSO  environment and determine the specific compute VM where the instance is currently running.
 +
 ----
-(overcloud) [stack@director ~]$ openstack server list --long -c Name -c Status -c Networks -c Host
+[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server list --long -c Name -c Status -c Networks -c Host
 +--------------------+--------+---------------------------------------------------------+-------------------------------------+
 | Name               | Status | Networks                                                | Host                                |
 +--------------------+--------+---------------------------------------------------------+-------------------------------------+
-| scenario-bfx020-vm | ACTIVE | scenario-bfx020-network=172.25.250.217, 192.168.120.152 | overcloud-novacompute-1.localdomain |
+| scenario-bfx020-vm | ACTIVE | scenario-bfx020-network=192.168.51.181, 192.168.120.152 | compute02.srv.example.com           |
 +--------------------+--------+---------------------------------------------------------+-------------------------------------+
 ----
 +
 Host in the preceding output can differ in your environment.
-scenario-bfx020-vm is running on the overcloud-novacompute-1 host.
+scenario-bfx020-vm is running on the compute02.srv.example.com host.
 
 4. Examine the ARP cache on the director VM and look for the details of the inaccessible OpenStack instance.
 +
+The `workstation` machine do not have L2 access to the `192.168.51.0/24`
+network. To check that you first need to access the `utility` server.
++
 ----
-(overcloud) [stack@director ~]$ ip neighbor | grep 172.25.250.217
-172.25.250.217 dev eth0 lladdr fa:16:3e:06:d9:00 STALE
+[student@workstation ~]$ ssh lab@utility
+Register this system with Red Hat Insights: insights-client --register
+Create an account or view all your systems at https://red.ht/insights-dashboard
+Last login: Fri Mar 28 10:47:30 2025 from 172.25.250.9
+
+[lab@utility ~]$ ip neighbor | grep 192.168.51.181
+192.168.51.181 dev eth0 lladdr fa:16:3e:06:d9:00 STALE
 ----
 An entry with the floating IP associated with a MAC address, indicating successful ARP negotiation.
 This signifies functional communication via ARP, but ICMP communication remains problematic.
@@ -82,26 +82,14 @@ Proceed to verify whether the packets are being correctly routed to the appropri
 Run the ovs-vsctl show command to find the interface associated with the external bridge br-ex.
 +
 ----
-[student@workstation ~]$ ssh student@director
-student@director's password:
+[student@workstation ~]$ ssh root@compute02.srv.example.com
 Activate the web console with: systemctl enable --now cockpit.socket
 
 Register this system with Red Hat Insights: insights-client --register
 Create an account or view all your systems at https://red.ht/insights-dashboard
-Last login: Fri Mar  1 05:04:42 2024 from 172.25.250.9
+Last login: Mon Mar 31 09:31:34 2025 from 192.168.51.254
 
-[student@director ~]$ sudo su - stack
-[sudo] password for student:
-Last login: Fri Mar  1 05:04:50 EST 2024 on pts/0
-
-(overcloud) [stack@director ~]$ ssh tripleo-admin@overcloud-compute1
-Register this system with Red Hat Insights: insights-client --register
-Create an account or view all your systems at https://red.ht/insights-dashboard
-Last login: Fri Jan 26 12:15:25 2024 from 172.25.249.11
-
-[tripleo-admin@overcloud-novacompute-1 ~]$ sudo su -
-
-[root@overcloud-novacompute-1 ~]# ovs-vsctl show
+[root@compute02 ~]# ovs-vsctl show
 ...output omitted...
     Bridge br-ex
         fail_mode: standalone
@@ -109,7 +97,7 @@ Last login: Fri Jan 26 12:15:25 2024 from 172.25.249.11
             Interface br-ex
                 type: internal
         ...output omitted...
-        Port ens4
+        Port eth2
             Interface ens4
 ...output omitted...
 ----
@@ -119,24 +107,24 @@ Interface in the preceding output can differ in your environment.
 6. To verify incoming traffic, initiate a tcpdump on above interface on the compute VM and try to ping the instance from another terminal from the director VM.
 +
 ----
-[root@overcloud-novacompute-1 ~]# tcpdump -envvi ens4 icmp
+[root@compute02 ~]# tcpdump -envvi eth2 icmp
 dropped privs to tcpdump
-tcpdump: listening on ens4, link-type EN10MB (Ethernet), snapshot length 262144 bytes
-11:04:50.054084 52:54:00:04:fa:0b > fa:16:3e:06:d9:00, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 22810, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.11 > 172.25.250.217: ICMP echo request, id 2, seq 1, length 64
-11:04:51.095931 52:54:00:04:fa:0b > fa:16:3e:06:d9:00, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 23812, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.11 > 172.25.250.217: ICMP echo request, id 2, seq 2, length 64
-11:04:52.120036 52:54:00:04:fa:0b > fa:16:3e:06:d9:00, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 23850, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.11 > 172.25.250.217: ICMP echo request, id 2, seq 3, length 64
+tcpdump: listening on eth2, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+10:36:22.673988 52:54:00:02:33:fe > fa:16:3e:43:94:db, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 11758, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.51.181: ICMP echo request, id 3, seq 1, length 64
+10:36:23.703685 52:54:00:02:33:fe > fa:16:3e:43:94:db, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 12225, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.51.181: ICMP echo request, id 3, seq 2, length 64
+10:36:24.727617 52:54:00:02:33:fe > fa:16:3e:43:94:db, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 12345, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.51.181: ICMP echo request, id 3, seq 3, length 64
 ^C
 3 packets captured
 3 packets received by filter
 0 packets dropped by kernel
 
-(overcloud) [stack@director ~]$ ping 172.25.250.217 -c 3
-PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
+[student@workstation ~]$ ping 192.168.51.181 -c 3
+PING 192.168.51.181 (192.168.51.181) 56(84) bytes of data.
 
---- 172.25.250.217 ping statistics ---
+--- 192.168.51.181 ping statistics ---
 3 packets transmitted, 0 received, 100% packet loss, time 2067ms
 ----
 +
@@ -147,46 +135,46 @@ However, observe that echo requests are not receiving the echo replies on the di
 7. Determine the tap interface used for the instance on the compute VM.
 +
 ----
-(overcloud) [stack@director ~]$ openstack port list --server scenario-bfx020-vm
+[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack port list --server scenario-bfx020-vm
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
 | ID                                   | Name | MAC Address       | Fixed IP Addresses                                                             | Status |
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
-| 32311030-701f-462b-bc64-899e67ad6e78 |      | fa:16:3e:42:bb:e3 | ip_address='192.168.120.152', subnet_id='a587591a-1147-4c49-8d0d-32857a103a82' | ACTIVE |
+| a9b701ad-2aae-4893-aa99-683ece2b3fda |      | fa:16:3e:40:9d:96 | ip_address='192.168.120.156', subnet_id='1eeeac8a-8f1f-40ec-b03d-b88999d94fc3' | ACTIVE |
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
 ----
 The preceding output can differ in your environment.
 The tap interface name is tap<initial part of port ID>. Refer to the Additional Information page for more details.
-Here tap interface name is tap32311030-70.
+Here tap interface name is tapa9b701ad-2a.
 
 8. Run ip l show command on compute VM.
 +
 ----
-[root@overcloud-novacompute-1 ~]# ip l show tap32311030-70
-18: tap32311030-70: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1442 qdisc noqueue master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
-    link/ether fe:16:3e:42:bb:e3 brd ff:ff:ff:ff:ff:ff
+[root@compute02 ~]# ip l show tapa9b701ad-2a
+23: tapa9b701ad-2a: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1442 qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether fe:16:3e:40:9d:96 brd ff:ff:ff:ff:ff:ff
 ----
 
 9. Initiate a tcpdump on tap interface on the compute VM and try to ping the instance from another terminal from the director VM.
 +
 ----
-[root@overcloud-novacompute-1 ~]# tcpdump -envvi tap32311030-70
+[root@compute02 ~]# tcpdump -envvi tapa9b701ad-2a
 dropped privs to tcpdump
-tcpdump: listening on tap32311030-70, link-type EN10MB (Ethernet), snapshot length 262144 bytes
-06:06:55.836997 fa:16:3e:34:88:e6 > fa:16:3e:42:bb:e3, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 58088, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.11 > 192.168.120.152: ICMP echo request, id 3, seq 1, length 64
-06:06:56.855560 fa:16:3e:34:88:e6 > fa:16:3e:42:bb:e3, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 58956, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.11 > 192.168.120.152: ICMP echo request, id 3, seq 2, length 64
-06:06:57.879456 fa:16:3e:34:88:e6 > fa:16:3e:42:bb:e3, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 59581, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.11 > 192.168.120.152: ICMP echo request, id 3, seq 3, length 64
+tcpdump: listening on tapa9b701ad-2a, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+10:40:35.631285 fa:16:3e:0e:8d:a5 > fa:16:3e:40:9d:96, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 5048, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.120.156: ICMP echo request, id 4, seq 1, length 64
+10:40:36.631628 fa:16:3e:0e:8d:a5 > fa:16:3e:40:9d:96, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 5789, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.120.156: ICMP echo request, id 4, seq 2, length 64
+10:40:37.655643 fa:16:3e:0e:8d:a5 > fa:16:3e:40:9d:96, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 6801, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.120.156: ICMP echo request, id 4, seq 3, length 64
 ^C
 3 packets captured
 3 packets received by filter
 0 packets dropped by kernel
 
-(overcloud) [stack@director ~]$ ping 172.25.250.217 -c 3
-PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
+[student@workstation ~]$ ping 192.168.51.181 -c 3
+PING 192.168.51.181 (192.168.51.181) 56(84) bytes of data.
 
---- 172.25.250.217 ping statistics ---
+--- 192.168.51.181 ping statistics ---
 3 packets transmitted, 0 received, 100% packet loss, time 2044ms
 ----
 Successful delivery of the echo request to the tap interface linked with the instance indicates that the network path and connectivity mechanisms are operating correctly.

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Guided solution (page 2) :: RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</title>
+    <link rel="prev" href="section1.html">
+    <link rel="next" href="../chapter3/section1.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp-bfx020" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">What’s in this break-fix?</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section1.html">Break-fix activity</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section2.html">Check your work</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section3.html">Break-fix Scenario</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Guided solution</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section1.html">Guided solution (page 1)</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section2.html">Guided solution (page 2)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section1.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors</a></li>
+    <li><a href="index.html">Guided solution</a></li>
+    <li><a href="section2.html">Guided solution (page 2)</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Guided solution (page 2)</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Connect to the workstation VM&#8217;s console to access the instance&#8217;s console</p>
+</div>
+<div class="paragraph">
+<p>Refer to the Access instance’s console instructions under Additional information section of Break-fix Activity page.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>From GUI console of workstation, connect to director VM and get the instance&#8217;s console URL</p>
+<div class="listingblock">
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack console url show scenario-bfx020-vm
++----------+-----------------------------------------------------------------------------------------------------------------------------------------+
+| Field    | Value                                                                                                                                   |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------+
+| protocol | novnc                                                                                                                                   |
+| url      | https://nova-novncproxy-cell1-public-openstack.apps.ocp4.example.com/vnc_lite.html?path=%3Ftoken%3D2cf5e980-7d85-4a90-9884-d7c621c2a9dc |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The preceding output can differ in your environment.</p>
+</div>
+</li>
+<li>
+<p>Click the link in the output of above command to access the instance&#8217;s console from workstation VM console web browser.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/RHOSP.png" alt="RHOSP">
+</div>
+</div>
+<div class="paragraph">
+<p>You might see the No bootable device boot failure message, indicates the VM did not boot successfully.</p>
+</div>
+</li>
+<li>
+<p>Use the openstack server show command to verify the details of the instance, particularly the image being utilized.</p>
+<div class="listingblock">
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server show scenario-bfx020-vm
++-------------------------------------+---------------------------------------------------------------+
+| Field                               | Value                                                         |
++-------------------------------------+---------------------------------------------------------------+
+...output omitted...
+| image                               | scenario-bfx020-image (aef5b943-d9e1-4d6a-8ef5-df3e5721b2de)  |
+...output omitted...</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Inspect the image using openstack image show command.</p>
+<div class="listingblock">
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack image show scenario-bfx020-image
++-------------------------------------+-----------------------------------------+
+| Field                               | Value                                   |
++-------------------------------------+-----------------------------------------+
+...output omitted...
+| size                                | 196608                                  |
+...output omitted...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the image size is pretty small, it is likely a root cause of the boot failure.</p>
+</div>
+</li>
+<li>
+<p>To resolve this issue, begin by deleting the problematic server.</p>
+<div class="listingblock">
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server delete scenario-bfx020-vm</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Recreate the instance, this time using the cirros image, which is a lightweight and commonly used image for testing purposes.</p>
+<div class="listingblock">
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server create --image cirros-0.5.2-x86_64 --flavor m1.small --key-name scenario-bfx020-key --nic net-id=scenario-bfx020-network --security-group scenario-bfx020-sg scenario-bfx020-vm</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Get the floating IP for the newly created instance, enabling external access and communication.</p>
+<div class="listingblock">
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack floating ip list
++--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
+| ID                                   | Floating IP Address | Fixed IP Address | Port | Floating Network                     | Project                          |
++--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
+| 11290596-ad3e-4688-a791-5d12fa85c67b | 192.168.51.181      | None             | None | b2f70670-883c-44ed-9cd3-9be361430dc7 | 0192bf49efca46bf932847c75117578e |
++--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Floating IP in preceding output can differ in your environment.</p>
+</div>
+</li>
+<li>
+<p>Attach a floating IP to the newly created instance.</p>
+<div class="listingblock">
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack port list --server scenario-bfx020-vm
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+| ID                                   | Name | MAC Address       | Fixed IP Addresses                                                             | Status |
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+| a9b701ad-2aae-4893-aa99-683ece2b3fda |      | fa:16:3e:40:9d:96 | ip_address='192.168.120.156', subnet_id='1eeeac8a-8f1f-40ec-b03d-b88999d94fc3' | ACTIVE |
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+
+[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack floating ip set --port a9b701ad-2aae-4893-aa99-683ece2b3fda 192.168.51.181</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The preceding output can differ in your environment.</p>
+</div>
+</li>
+<li>
+<p>Test the connectivity by attempting ICMP ping and SSH access to the instance.</p>
+<div class="listingblock">
+<div class="content">
+<pre>[student@workstation ~]$ ping 192.168.51.181 -c 1
+PING 192.168.51.181 (192.168.51.181) 56(84) bytes of data.
+64 bytes from 192.168.51.181: icmp_seq=1 ttl=63 time=4.77 ms
+
+--- 192.168.51.181 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 4.770/4.770/4.770/0.000 ms
+
+[student@workstation ~]$ ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.181
+Warning: Permanently added '192.168.51.181' (ECDSA) to the list of known hosts.
+sign_and_send_pubkey: no mutual signature supported
+cirros@192.168.51.181's password:
+$ cat /etc/cirros/version
+0.5.2
+$ exit
+Connection to 192.168.51.181 closed.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify that these actions are successful, indicating that the instance created using the new image is now accessible.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_evaluation"><a class="anchor" href="#_evaluation"></a>Evaluation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As the stack user on the director machine, use the lab command to grade your work. Correct any reported failures and rerun the command until successful.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[stack@director ~]$ lab grade bfx020</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_finish"><a class="anchor" href="#_finish"></a>Finish</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Run the lab finish command to complete this exercise. This step is important to ensure that resources from previous exercises do not impact upcoming exercises.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[stack@director ~]$ lab finish bfx020</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This concludes this section.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="section1.html">Guided solution (page 1)</a></span>
+  <span class="next"><a href="../chapter3/section1.html">Summary</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

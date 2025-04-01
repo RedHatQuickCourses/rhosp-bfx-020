@@ -146,13 +146,13 @@
 <p>From GUI console of workstation, connect to director VM and get the instance&#8217;s console URL</p>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ openstack console url show scenario-bfx020-vm
-+-------+-----------------------------------------------------------------------------------------------+
-| Field | Value                                                                                         |
-+-------+-----------------------------------------------------------------------------------------------+
-| type  | novnc                                                                                         |
-| url   | http://172.25.250.247:6080/vnc_auto.html?path=%3Ftoken%3D61a8cf42-1478-4047-9245-d3e1bfa55fcc |
-+-------+-----------------------------------------------------------------------------------------------+</pre>
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack console url show scenario-bfx020-vm
++----------+-----------------------------------------------------------------------------------------------------------------------------------------+
+| Field    | Value                                                                                                                                   |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------+
+| protocol | novnc                                                                                                                                   |
+| url      | https://nova-novncproxy-cell1-public-openstack.apps.ocp4.example.com/vnc_lite.html?path=%3Ftoken%3D2cf5e980-7d85-4a90-9884-d7c621c2a9dc |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------+</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -174,7 +174,7 @@
 <p>Use the openstack server show command to verify the details of the instance, particularly the image being utilized.</p>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ openstack server show scenario-bfx020-vm
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server show scenario-bfx020-vm
 +-------------------------------------+---------------------------------------------------------------+
 | Field                               | Value                                                         |
 +-------------------------------------+---------------------------------------------------------------+
@@ -188,24 +188,24 @@
 <p>Inspect the image using openstack image show command.</p>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ openstack image show scenario-bfx020-image
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack image show scenario-bfx020-image
 +-------------------------------------+-----------------------------------------+
 | Field                               | Value                                   |
 +-------------------------------------+-----------------------------------------+
 ...output omitted...
-| size                                | 0                                       |
+| size                                | 196608                                  |
 ...output omitted...</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Note that the image size shows as zero bytes, it is likely a root cause of the boot failure.</p>
+<p>Note that the image size is pretty small, it is likely a root cause of the boot failure.</p>
 </div>
 </li>
 <li>
 <p>To resolve this issue, begin by deleting the problematic server.</p>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ openstack server delete scenario-bfx020-vm</pre>
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server delete scenario-bfx020-vm</pre>
 </div>
 </div>
 </li>
@@ -213,7 +213,7 @@
 <p>Recreate the instance, this time using the cirros image, which is a lightweight and commonly used image for testing purposes.</p>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ openstack server create --image cirros-0.5.2-x86_64 --flavor m1.medium --key-name scenario-bfx020-key --nic net-id=scenario-bfx020-network --security-group scenario-bfx020-sg scenario-bfx020-vm</pre>
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server create --image cirros-0.5.2-x86_64 --flavor m1.small --key-name scenario-bfx020-key --nic net-id=scenario-bfx020-network --security-group scenario-bfx020-sg scenario-bfx020-vm</pre>
 </div>
 </div>
 </li>
@@ -221,11 +221,11 @@
 <p>Get the floating IP for the newly created instance, enabling external access and communication.</p>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ openstack floating ip list
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack floating ip list
 +--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
 | ID                                   | Floating IP Address | Fixed IP Address | Port | Floating Network                     | Project                          |
 +--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
-| 11290596-ad3e-4688-a791-5d12fa85c67b | 172.25.250.217      | None             | None | b2f70670-883c-44ed-9cd3-9be361430dc7 | 0192bf49efca46bf932847c75117578e |
+| 11290596-ad3e-4688-a791-5d12fa85c67b | 192.168.51.181      | None             | None | b2f70670-883c-44ed-9cd3-9be361430dc7 | 0192bf49efca46bf932847c75117578e |
 +--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+</pre>
 </div>
 </div>
@@ -237,14 +237,14 @@
 <p>Attach a floating IP to the newly created instance.</p>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ openstack port list --server scenario-bfx020-vm
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack port list --server scenario-bfx020-vm
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
 | ID                                   | Name | MAC Address       | Fixed IP Addresses                                                             | Status |
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
-| 3f1e8f39-e3db-4f5b-aa00-ee4b46f56d6d |      | fa:16:3e:7a:68:f6 | ip_address='192.168.120.186', subnet_id='a587591a-1147-4c49-8d0d-32857a103a82' | ACTIVE |
+| a9b701ad-2aae-4893-aa99-683ece2b3fda |      | fa:16:3e:40:9d:96 | ip_address='192.168.120.156', subnet_id='1eeeac8a-8f1f-40ec-b03d-b88999d94fc3' | ACTIVE |
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
 
-(overcloud) [stack@director ~]$ openstack floating ip set --port 3f1e8f39-e3db-4f5b-aa00-ee4b46f56d6d 172.25.250.217</pre>
+[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack floating ip set --port a9b701ad-2aae-4893-aa99-683ece2b3fda 192.168.51.181</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -255,22 +255,22 @@
 <p>Test the connectivity by attempting ICMP ping and SSH access to the instance.</p>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ ping 172.25.250.217 -c 1
-PING 172.25.250.217 (172.25.250.217) 56(84) bytes of data.
-64 bytes from 172.25.250.217: icmp_seq=1 ttl=63 time=4.77 ms
+<pre>[student@workstation ~]$ ping 192.168.51.181 -c 1
+PING 192.168.51.181 (192.168.51.181) 56(84) bytes of data.
+64 bytes from 192.168.51.181: icmp_seq=1 ttl=63 time=4.77 ms
 
---- 172.25.250.217 ping statistics ---
+--- 192.168.51.181 ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 4.770/4.770/4.770/0.000 ms
 
-(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
-Warning: Permanently added '172.25.250.217' (ECDSA) to the list of known hosts.
+[student@workstation ~]$ ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.181
+Warning: Permanently added '192.168.51.181' (ECDSA) to the list of known hosts.
 sign_and_send_pubkey: no mutual signature supported
-cirros@172.25.250.217's password:
+cirros@192.168.51.181's password:
 $ cat /etc/cirros/version
 0.5.2
 $ exit
-Connection to 172.25.250.217 closed.</pre>
+Connection to 192.168.51.181 closed.</pre>
 </div>
 </div>
 <div class="paragraph">

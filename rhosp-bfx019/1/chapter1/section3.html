@@ -162,8 +162,8 @@ Your team manages a Red Hat OpenStack Platform (RHOSP) infrastructure used by an
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
-ssh: connect to host 172.25.250.217 port 22: Connection timed out</pre>
+<pre>[student@workstation ~]$ ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.181
+ssh: connect to host 192.168.51.181 port 22: Connection timed out</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -183,14 +183,17 @@ ssh: connect to host 172.25.250.217 port 22: Connection timed out</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>[student@workstation ~]$ ssh stack@director
+<pre>[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
 
-[stack@director ~]$ source overcloudrc
+You have access to 76 projects, the list has been suppressed. You can list all projects with 'oc projects'
 
-(overcloud) [stack@director ~]$ lab start bfx020
+Using project "openstack".
+
+[student@workstation ~]$ lab start bfx020
 Running start action against scenario bfx020
 Run the following command:
-ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217</pre>
+ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.181</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -205,8 +208,8 @@ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@1
 <p>To ensure scenario is recreated, run the ssh command from the previous output:</p>
 <div class="listingblock">
 <div class="content">
-<pre>(overcloud) [stack@director ~]$ ssh -i /home/stack/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@172.25.250.217
-ssh: connect to host 172.25.250.217 port 22: Connection timed out</pre>
+<pre>[student@workstation ~]$ ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.181
+ssh: connect to host 192.168.51.181 port 22: Connection timed out</pre>
 </div>
 </div>
 </li>

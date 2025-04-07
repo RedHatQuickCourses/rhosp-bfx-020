@@ -21,46 +21,21 @@ The preceding output can differ in your environment.
 +
 image::RHOSP.png[]
 +
-You might see the No bootable device boot failure message, indicates the VM did not boot successfully.
+You might see the No bootable device boot failure message, indicates the VM did not boot successfully. This indicates that the image being utilized is corrupted.
 
-3. Use the openstack server show command to verify the details of the instance, particularly the image being utilized.
-+
-----
-[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server show scenario-bfx020-vm
-+-------------------------------------+---------------------------------------------------------------+
-| Field                               | Value                                                         |
-+-------------------------------------+---------------------------------------------------------------+
-...output omitted...
-| image                               | scenario-bfx020-image (aef5b943-d9e1-4d6a-8ef5-df3e5721b2de)  |
-...output omitted...
-----
-
-4. Inspect the image using openstack image show command.
-+
-----
-[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack image show scenario-bfx020-image
-+-------------------------------------+-----------------------------------------+
-| Field                               | Value                                   |
-+-------------------------------------+-----------------------------------------+
-...output omitted...
-| size                                | 196608                                  |
-...output omitted...
-----
-Note that the image size is pretty small, it is likely a root cause of the boot failure.
-
-5. To resolve this issue, begin by deleting the problematic server.
+3. To resolve this issue, begin by deleting the problematic server.
 +
 ----
 [student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server delete scenario-bfx020-vm
 ----
 
-6. Recreate the instance, this time using the cirros image, which is a lightweight and commonly used image for testing purposes.
+4. Recreate the instance, this time using the cirros image, which is a lightweight and commonly used image for testing purposes.
 +
 ----
 [student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server create --image cirros-0.5.2-x86_64 --flavor m1.small --key-name scenario-bfx020-key --nic net-id=scenario-bfx020-network --security-group scenario-bfx020-sg scenario-bfx020-vm
 ----
 
-7. Get the floating IP for the newly created instance, enabling external access and communication.
+5. Get the floating IP for the newly created instance, enabling external access and communication.
 +
 ----
 [student@workstation ~]$ oc exec -n openstack openstackclient -- openstack floating ip list
@@ -72,7 +47,7 @@ Note that the image size is pretty small, it is likely a root cause of the boot 
 ----
 Floating IP in preceding output can differ in your environment.
 
-8. Attach a floating IP to the newly created instance.
+6. Attach a floating IP to the newly created instance.
 +
 ----
 [student@workstation ~]$ oc exec -n openstack openstackclient -- openstack port list --server scenario-bfx020-vm
@@ -86,7 +61,7 @@ Floating IP in preceding output can differ in your environment.
 ----
 The preceding output can differ in your environment.
 
-9. Test the connectivity by attempting ICMP ping and SSH access to the instance.
+7. Test the connectivity by attempting ICMP ping and SSH access to the instance.
 +
 ----
 [student@workstation ~]$ ping 192.168.51.181 -c 1

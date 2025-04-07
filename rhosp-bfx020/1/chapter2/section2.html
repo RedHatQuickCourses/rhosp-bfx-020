@@ -167,38 +167,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>You might see the No bootable device boot failure message, indicates the VM did not boot successfully.</p>
-</div>
-</li>
-<li>
-<p>Use the openstack server show command to verify the details of the instance, particularly the image being utilized.</p>
-<div class="listingblock">
-<div class="content">
-<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server show scenario-bfx020-vm
-+-------------------------------------+---------------------------------------------------------------+
-| Field                               | Value                                                         |
-+-------------------------------------+---------------------------------------------------------------+
-...output omitted...
-| image                               | scenario-bfx020-image (aef5b943-d9e1-4d6a-8ef5-df3e5721b2de)  |
-...output omitted...</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Inspect the image using openstack image show command.</p>
-<div class="listingblock">
-<div class="content">
-<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack image show scenario-bfx020-image
-+-------------------------------------+-----------------------------------------+
-| Field                               | Value                                   |
-+-------------------------------------+-----------------------------------------+
-...output omitted...
-| size                                | 196608                                  |
-...output omitted...</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note that the image size is pretty small, it is likely a root cause of the boot failure.</p>
+<p>You might see the No bootable device boot failure message, indicates the VM did not boot successfully. This indicates that the image being utilized is corrupted.</p>
 </div>
 </li>
 <li>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Guided solution (page 2) :: RHOSP Networking Break-fix Practice - 2</title>
+    <link rel="prev" href="section1.html">
+    <link rel="next" href="section3.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">RHOSP Networking Break-fix Practice - 2</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp-bfx-020" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">RHOSP Networking Break-fix Practice - 2</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">What’s in this break-fix?</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section1.html">Break-fix activity</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section2.html">Check your work</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section3.html">Break-fix Scenario</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Guided solution</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section1.html">Guided solution (page 1)</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section2.html">Guided solution (page 2)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section3.html">Evalution</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section1.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">RHOSP Networking Break-fix Practice - 2</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">RHOSP Networking Break-fix Practice - 2</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">RHOSP Networking Break-fix Practice - 2</a></li>
+    <li><a href="index.html">Guided solution</a></li>
+    <li><a href="section2.html">Guided solution (page 2)</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Guided solution (page 2)</h1>
+<div class="paragraph">
+<p><strong>Connect to the workstation VM&#8217;s GUI console to access the instance&#8217;s console</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>From GUI console of workstation, connect to workstation VM and get the instance&#8217;s console URL</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -n openstack openstackclient -- openstack console url show scenario-bfx020-vm</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack console url show scenario-bfx020-vm
++----------+-----------------------------------------------------------------------------------------------------------------------------------------+
+| Field    | Value                                                                                                                                   |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------+
+| protocol | vnc                                                                                                                                     |
+| type     | novnc                                                                                                                                   |
+| url      | https://nova-novncproxy-cell1-public-openstack.apps.ocp4.example.com/vnc_lite.html?path=%3Ftoken%3D3d15f4dd-7438-4d06-ba01-1926f3b7b233 |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------+
+[student@workstation ~]$</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The command is to be run from a terminal within the GUI console of workstation VM.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Click the link in the output of above command to access the instance&#8217;s console in a web browser <strong>from the workstation VM&#8217;s GUI console</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/RHOSP.png" alt="RHOSP">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You might see the No bootable device boot failure message, indicates the VM did not boot successfully.</p>
+</li>
+<li>
+<p>This indicates that the image being utilized is corrupted.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>To resolve this issue, begin by deleting the problematic server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -n openstack openstackclient -- openstack server delete scenario-bfx020-vm</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Recreate the instance, this time using the cirros image, which is a lightweight and commonly used image for testing purposes.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -n openstack openstackclient -- openstack server create --image cirros-0.5.2-x86_64 --flavor m1.small --key-name scenario-bfx020-key --nic net-id=scenario-bfx020-network --security-group scenario-bfx020-sg scenario-bfx020-vm</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run the above command as student user on workstation vm.</p>
+</div>
+</li>
+<li>
+<p>Get the floating IP for the newly created instance, enabling external access and communication.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -n openstack openstackclient -- openstack floating ip list</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack floating ip list
++--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
+| ID                                   | Floating IP Address | Fixed IP Address | Port | Floating Network                     | Project                          |
++--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
+| b767f855-9926-4026-aa7d-bb9d8cd244f5 | 192.168.51.183      | None             | None | 7f810d7c-9334-4d79-85f6-9b347c336166 | 7ac1618d984947c0bfcbf713a94fed4a |
++--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
+[student@workstation ~]$</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Floating IP in preceding output may differ in your environment.</p>
+</div>
+</li>
+<li>
+<p>Attach a floating IP to the newly created instance.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -n openstack openstackclient -- openstack server add floating ip scenario-bfx020-vm floating.ip.in.earlier.output</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Replace the string floating.ip.in.earlier.output with appropriate value.</strong></p>
+</div>
+</li>
+</ol>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="section1.html">Guided solution (page 1)</a></span>
+  <span class="next"><a href="section3.html">Evalution</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

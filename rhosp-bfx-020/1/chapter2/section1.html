@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Guided solution (page 1) :: RHOSP Networking Break-fix Practice - 2</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="section2.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">RHOSP Networking Break-fix Practice - 2</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp-bfx-020" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">RHOSP Networking Break-fix Practice - 2</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">What’s in this break-fix?</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section1.html">Break-fix activity</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section2.html">Check your work</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section3.html">Break-fix Scenario</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Guided solution</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section1.html">Guided solution (page 1)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section2.html">Guided solution (page 2)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section3.html">Evalution</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../chapter3/section1.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">RHOSP Networking Break-fix Practice - 2</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">RHOSP Networking Break-fix Practice - 2</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">RHOSP Networking Break-fix Practice - 2</a></li>
+    <li><a href="index.html">Guided solution</a></li>
+    <li><a href="section1.html">Guided solution (page 1)</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Guided solution (page 1)</h1>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to your lab environment on the <strong>ROLE</strong> platform.</p>
+</li>
+<li>
+<p>Break the environment if you have not done it and then step through the fix.</p>
+</li>
+<li>
+<p>As the <strong>student</strong> user, run the lab start script on the <strong>workstation</strong> VM to reproduce the issue.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd /home/student/osp_training/scenarios_repo/
+./lab start bfx020</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[student@workstation scenarios_repo]$ ./lab start bfx020
+Running start action against scenario bfx020
+Run the following command:
+ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.183
+
+[student@workstation scenarios_repo]$</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run the ssh command from the previous lab command output and notice the Connection timed out error. Also run the ping command against instance IP.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh -i /home/student/osp_training/.breakfix020/breakfix020-key.pem cirros@instance.ip.in.your.lab</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ping -c 1 instance.ip.in.your.lab</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the above commands replace the string <strong>instance.ip.in.your.lab</strong> with the <strong>actual IP</strong> address displayed in the output of the lab start script.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[student@workstation scenarios_repo]$ ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.183
+
+ssh: connect to host 192.168.51.183 port 22: Connection timed out
+[student@workstation scenarios_repo]$
+[student@workstation scenarios_repo]$ ping -c 1 192.168.51.183
+PING 192.168.51.183 (192.168.51.183) 56(84) bytes of data.
+
+--- 192.168.51.183 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+[student@workstation scenarios_repo]$</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You observe that both ping and ssh attempts failed which indicates lack of connectivity.</p>
+</div>
+</li>
+<li>
+<p>Access the RHOSO  environment and determine the specific compute VM where the instance is currently running.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">---
+oc exec -n openstack openstackclient -- openstack server list --long -c Name -c Status -c Networks -c Host
+---</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server list --long -c Name -c Status -c Networks -c Host
+
++--------------------+--------+---------------------------------------------------------+---------------------------+
+| Name               | Status | Networks                                                | Host                      |
++--------------------+--------+---------------------------------------------------------+---------------------------+
+| scenario-bfx020-vm | ACTIVE | scenario-bfx020-network=192.168.120.101, 192.168.51.183 | compute01.srv.example.com |
++--------------------+--------+---------------------------------------------------------+---------------------------+
+[student@workstation scenarios_repo]$</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>scenario-bfx020-vm is running on the compute01.srv.example.com host.</p>
+</li>
+<li>
+<p>Host in the preceding output can differ in your environment.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Examine the ARP cache to look for the details of the inaccessible OpenStack instance.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>workstation</code> machine do not have L2 access to the <code>192.168.51.0/24</code> network.</p>
+</li>
+<li>
+<p>To check that you first need to access the <code>utility</code> server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh lab@utility
+ip neighbor | grep instance.ip.in.your.lab</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace instance.ip.in.your.lab with actual ip address.</p>
+</div>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[student@workstation ~]$ ssh lab@utility
+Register this system with Red Hat Insights: insights-client --register
+Create an account or view all your systems at https://red.ht/insights-dashboard
+Last login: Fri Mar 28 10:47:30 2025 from 172.25.250.9
+
+[lab@utility ~]$ ip neighbor | grep 192.168.51.183
+192.168.51.183 dev eth2 lladdr fa:16:3e:5e:74:ec STALE
+[lab@utility ~]$</pre>
+</div>
+</div>
+</li>
+<li>
+<p>An entry with the floating IP associated with a MAC address, indicating successful ARP negotiation.</p>
+</li>
+<li>
+<p>This signifies functional communication via ARP, but ICMP communication remains problematic.</p>
+</li>
+<li>
+<p>Proceed to verify whether the packets are being correctly routed to the appropriate VM.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Open another terminal and run the ssh command to log in to the compute VM where the instance is hosted.</p>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[student@workstation ~]$ ssh root@compute01.srv.example.com
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Register this system with Red Hat Insights: insights-client --register
+Create an account or view all your systems at https://red.ht/insights-dashboard
+Last login: Mon Mar 31 09:31:34 2025 from 192.168.51.254</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run the ovs-vsctl show command on the <strong>compute</strong> node to find the interface associated with the external bridge br-ex.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ovs-vsctl show</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[root@compute01 ~]# ovs-vsctl show
+...output omitted...
+
+    Bridge br-ex
+        fail_mode: standalone
+        Port patch-provnet-0d56e30d-2f28-44ab-b67a-2fd92f1294bd-to-br-int
+            Interface patch-provnet-0d56e30d-2f28-44ab-b67a-2fd92f1294bd-to-br-int
+                type: patch
+                options: {peer=patch-br-int-to-provnet-0d56e30d-2f28-44ab-b67a-2fd92f1294bd}
+        Port br-ex
+            Interface br-ex
+                type: internal
+        Port eth2
+            Interface eth2
+...output omitted...</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>As per captured output, interface eth2 is associated with br-ex.</p>
+</li>
+<li>
+<p>Interface in the preceding output may differ in your environment.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>To verify incoming traffic, initiate a tcpdump on above interface on the compute VM and try to ping the instance from another terminal from the workstation VM.</p>
+<div class="paragraph">
+<p><strong>On compute node:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">tcpdump -envvi eth2 icmp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>On workstation vm:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ping 192.168.51.183 -c 3</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[root@compute01 ~]# tcpdump -envvi eth2 icmp
+dropped privs to tcpdump
+tcpdump: listening on eth2, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+07:57:48.601573 52:54:00:02:33:fe &gt; fa:16:3e:5e:74:ec, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 15655, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 &gt; 192.168.51.183: ICMP echo request, id 7, seq 1, length 64
+07:57:49.608154 52:54:00:02:33:fe &gt; fa:16:3e:5e:74:ec, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 16610, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 &gt; 192.168.51.183: ICMP echo request, id 7, seq 2, length 64
+07:57:50.632466 52:54:00:02:33:fe &gt; fa:16:3e:5e:74:ec, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 17148, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 &gt; 192.168.51.183: ICMP echo request, id 7, seq 3, length 64
+[root@compute01 ~]#
+
+
+[student@workstation ~]$ ping 192.168.51.183 -c 3
+PING 192.168.51.183 (192.168.51.183) 56(84) bytes of data.
+
+--- 192.168.51.183 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2032ms
+
+[student@workstation ~]$</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Observe that ICMP echo requests arriving at the VM.</p>
+</li>
+<li>
+<p>The presence of ICMP echo requests reaching the external NIC on the compute VM indicates the proper functioning of the Distributed Virtual Router (DVR).</p>
+</li>
+<li>
+<p>However, observe that echo requests are not receiving the echo replies on the workstation VM.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Determine the tap interface used for the instance on the compute VM.</p>
+</li>
+<li>
+<p>Run below command as <strong>student</strong> user on <strong>workstation</strong> vm</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -n openstack openstackclient -- openstack port list --server scenario-bfx020-vm</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack port list --server scenario-bfx020-vm
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+| ID                                   | Name | MAC Address       | Fixed IP Addresses                                                             | Status |
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+| b3a5ede9-8e32-4bb4-bf75-164857a9d5bc |      | fa:16:3e:7b:72:5e | ip_address='192.168.120.101', subnet_id='e361339e-16a0-4378-af96-7ebae09d6bb0' | ACTIVE |
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+[student@workstation ~]$</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The preceding output can differ in your environment.</p>
+</li>
+<li>
+<p>The tap interface name is tap&lt;initial part of port ID&gt;.</p>
+</li>
+<li>
+<p>Here tap interface name is tapb3a5ede9-8e</p>
+</li>
+<li>
+<p>Determine this for your lab environment.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Run <code>ip link show</code> command for the tap interface on <strong>compute</strong> VM.</p>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[root@compute01 ~]# ip link show tapb3a5ede9-8e
+14: tapb3a5ede9-8e: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1442 qdisc noqueue master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether fe:16:3e:7b:72:5e brd ff:ff:ff:ff:ff:ff
+[root@compute01 ~]#</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Initiate a <strong>tcpdump</strong> on tap interface on the <strong>compute</strong> VM and try to <strong>ping</strong> the instance from another terminal from the <strong>workstation</strong> VM.</p>
+<div class="listingblock">
+<div class="title">Sample output</div>
+<div class="content">
+<pre>[root@compute01 ~]# tcpdump -envvi tapb3a5ede9-8e
+dropped privs to tcpdump
+tcpdump: listening on tapb3a5ede9-8e, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+08:08:15.375307 fa:16:3e:4a:0e:9b &gt; fa:16:3e:7b:72:5e, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 12415, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 &gt; 192.168.120.101: ICMP echo request, id 8, seq 1, length 64
+08:08:16.424532 fa:16:3e:4a:0e:9b &gt; fa:16:3e:7b:72:5e, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 13111, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 &gt; 192.168.120.101: ICMP echo request, id 8, seq 2, length 64
+08:08:17.448621 fa:16:3e:4a:0e:9b &gt; fa:16:3e:7b:72:5e, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 13963, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 &gt; 192.168.120.101: ICMP echo request, id 8, seq 3, length 64
+^C
+3 packets captured
+3 packets received by filter
+0 packets dropped by kernel
+[root@compute01 ~]#
+
+
+[student@workstation ~]$ ping 192.168.51.183 -c 3
+PING 192.168.51.183 (192.168.51.183) 56(84) bytes of data.
+
+--- 192.168.51.183 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2067ms
+
+[student@workstation ~]$</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Successful delivery of the echo request to the tap interface linked with the instance indicates that the network path and connectivity mechanisms are operating correctly.</p>
+</li>
+<li>
+<p>All indicators appear satisfactory from the Neutron perspective. The underlying networking infrastructure, including OVN components, is functioning as intended.</p>
+</li>
+<li>
+<p>It appeared that the virtual machine (VM) failed to generate a reply when the echo request reached it.</p>
+</li>
+<li>
+<p>The problem might reside within the VM internal configuration or its behavior towards the incoming requests.</p>
+</li>
+<li>
+<p>Access the instance&#8217;s console for further investigation on this issue.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Guided solution</a></span>
+  <span class="next"><a href="section2.html">Guided solution (page 2)</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

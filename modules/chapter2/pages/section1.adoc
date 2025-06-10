@@ -1,188 +1,262 @@
 = Guided solution (page 1)
 
-== Objectives
-* Investigate the instance connectivity issue in Red Hat OpenStack Platform.
-* Solve the instance connectivity in the hands-on lab environment.
+. Log in to your lab environment on the **ROLE** platform.
 
-== Outcomes
-* Investigate why ssh to instance is not working.
-* Fix the ssh to instance failing issue.
+. Break the environment if you have not done it and then step through the fix.
 
-== Instructions
-
-1. Break the environment if you have not done it and step through the fix.
+. As the **student** user, run the lab start script on the **workstation** VM to reproduce the issue.
 +
+[source, bash]
 ----
-[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
-Login successful.
-
-You have access to 76 projects, the list has been suppressed. You can list all projects with 'oc projects'
-
-Using project "openstack".
-
-[student@workstation ~]$ lab start bfx020
+cd /home/student/osp_training/scenarios_repo/
+./lab start bfx020
+----
++
+.Sample output
+----
+[student@workstation scenarios_repo]$ ./lab start bfx020
 Running start action against scenario bfx020
-Run the following command:
-ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.181
+Run the following command: 
+ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.183
+
+[student@workstation scenarios_repo]$ 
+----
+
+. Run the ssh command from the previous lab command output and notice the Connection timed out error. Also run the ping command against instance IP.
++
+[source, bash]
+----
+ssh -i /home/student/osp_training/.breakfix020/breakfix020-key.pem cirros@instance.ip.in.your.lab
 ----
 +
-[NOTE]
-====
-You need single instance of the lab environment to perorm all the break-fix activities in this series.
-====
-
-2. Run the ssh command from the previous lab command output and notice the Connection timed out error. Also run the ping command against instance IP.
-+
+[source, bash]
 ----
-[student@workstation ~]$ ssh -i /home/student/osp_training/.breakfix020/breakfix020-key.pem cirros@192.168.51.181
-ssh: connect to host 192.168.51.181 port 22: Connection timed out
+ping -c 1 instance.ip.in.your.lab
+----
++
+NOTE: In the above commands replace the string **instance.ip.in.your.lab** with the **actual IP** address displayed in the output of the lab start script.
++
+.Sample output
+----
+[student@workstation scenarios_repo]$ ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.183
 
-[student@workstation ~]$ ping 192.168.51.181 -c 1
-PING 192.168.51.181 (192.168.51.181) 56(84) bytes of data.
+ssh: connect to host 192.168.51.183 port 22: Connection timed out
+[student@workstation scenarios_repo]$ 
+[student@workstation scenarios_repo]$ ping -c 1 192.168.51.183
+PING 192.168.51.183 (192.168.51.183) 56(84) bytes of data.
 
---- 192.168.51.181 ping statistics ---
+--- 192.168.51.183 ping statistics ---
 1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+[student@workstation scenarios_repo]$ 
 ----
++
 You observe that both ping and ssh attempts failed which indicates lack of connectivity.
 
-3. Access the RHOSO  environment and determine the specific compute VM where the instance is currently running.
+. Access the RHOSO  environment and determine the specific compute VM where the instance is currently running.
 +
+[source, bash]
+---
+oc exec -n openstack openstackclient -- openstack server list --long -c Name -c Status -c Networks -c Host
+---
++
+.Sample output
 ----
 [student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server list --long -c Name -c Status -c Networks -c Host
-+--------------------+--------+---------------------------------------------------------+-------------------------------------+
-| Name               | Status | Networks                                                | Host                                |
-+--------------------+--------+---------------------------------------------------------+-------------------------------------+
-| scenario-bfx020-vm | ACTIVE | scenario-bfx020-network=192.168.51.181, 192.168.120.152 | compute02.srv.example.com           |
-+--------------------+--------+---------------------------------------------------------+-------------------------------------+
+
++--------------------+--------+---------------------------------------------------------+---------------------------+
+| Name               | Status | Networks                                                | Host                      |
++--------------------+--------+---------------------------------------------------------+---------------------------+
+| scenario-bfx020-vm | ACTIVE | scenario-bfx020-network=192.168.120.101, 192.168.51.183 | compute01.srv.example.com |
++--------------------+--------+---------------------------------------------------------+---------------------------+
+[student@workstation scenarios_repo]$ 
 ----
 +
-Host in the preceding output can differ in your environment.
-scenario-bfx020-vm is running on the compute02.srv.example.com host.
+* scenario-bfx020-vm is running on the compute01.srv.example.com host.
+* Host in the preceding output can differ in your environment.
 
-4. Examine the ARP cache on the director VM and look for the details of the inaccessible OpenStack instance.
+. Examine the ARP cache to look for the details of the inaccessible OpenStack instance.
 +
-The `workstation` machine do not have L2 access to the `192.168.51.0/24`
-network. To check that you first need to access the `utility` server.
+* The `workstation` machine do not have L2 access to the `192.168.51.0/24` network. 
+* To check that you first need to access the `utility` server.
 +
+[source, bash]
+----
+ssh lab@utility
+ip neighbor | grep instance.ip.in.your.lab
+----
++
+Replace instance.ip.in.your.lab with actual ip address.
++
+.Sample output
 ----
 [student@workstation ~]$ ssh lab@utility
 Register this system with Red Hat Insights: insights-client --register
 Create an account or view all your systems at https://red.ht/insights-dashboard
 Last login: Fri Mar 28 10:47:30 2025 from 172.25.250.9
 
-[lab@utility ~]$ ip neighbor | grep 192.168.51.181
-192.168.51.181 dev eth0 lladdr fa:16:3e:06:d9:00 STALE
+[lab@utility ~]$ ip neighbor | grep 192.168.51.183
+192.168.51.183 dev eth2 lladdr fa:16:3e:5e:74:ec STALE 
+[lab@utility ~]$ 
 ----
-An entry with the floating IP associated with a MAC address, indicating successful ARP negotiation.
-This signifies functional communication via ARP, but ICMP communication remains problematic.
-Proceed to verify whether the packets are being correctly routed to the appropriate VM.
+* An entry with the floating IP associated with a MAC address, indicating successful ARP negotiation.
+* This signifies functional communication via ARP, but ICMP communication remains problematic.
+* Proceed to verify whether the packets are being correctly routed to the appropriate VM.
 
-5. Open an another terminal and run the ssh command to log in to the compute VM where the instance is hosted.
+. Open another terminal and run the ssh command to log in to the compute VM where the instance is hosted.
 +
-Run the ovs-vsctl show command to find the interface associated with the external bridge br-ex.
-+
+.Sample output
 ----
-[student@workstation ~]$ ssh root@compute02.srv.example.com
+[student@workstation ~]$ ssh root@compute01.srv.example.com
 Activate the web console with: systemctl enable --now cockpit.socket
 
 Register this system with Red Hat Insights: insights-client --register
 Create an account or view all your systems at https://red.ht/insights-dashboard
 Last login: Mon Mar 31 09:31:34 2025 from 192.168.51.254
+----
 
-[root@compute02 ~]# ovs-vsctl show
+. Run the ovs-vsctl show command on the **compute** node to find the interface associated with the external bridge br-ex.
++
+[source, bash]
+----
+ovs-vsctl show
+----
++
+.Sample output
+----
+[root@compute01 ~]# ovs-vsctl show
 ...output omitted...
+
     Bridge br-ex
         fail_mode: standalone
+        Port patch-provnet-0d56e30d-2f28-44ab-b67a-2fd92f1294bd-to-br-int
+            Interface patch-provnet-0d56e30d-2f28-44ab-b67a-2fd92f1294bd-to-br-int
+                type: patch
+                options: {peer=patch-br-int-to-provnet-0d56e30d-2f28-44ab-b67a-2fd92f1294bd}
         Port br-ex
             Interface br-ex
                 type: internal
-        ...output omitted...
         Port eth2
-            Interface ens4
+            Interface eth2
 ...output omitted...
 ----
 +
-Interface in the preceding output can differ in your environment.
+* As per captured output, interface eth2 is associated with br-ex.
+* Interface in the preceding output may differ in your environment.
 
-6. To verify incoming traffic, initiate a tcpdump on above interface on the compute VM and try to ping the instance from another terminal from the director VM.
+. To verify incoming traffic, initiate a tcpdump on above interface on the compute VM and try to ping the instance from another terminal from the workstation VM.
 +
+**On compute node:**
++
+[source, bash]
 ----
-[root@compute02 ~]# tcpdump -envvi eth2 icmp
+tcpdump -envvi eth2 icmp
+----
++
+**On workstation vm:**
++
+[source, bash]
+----
+ping 192.168.51.183 -c 3
+----
++
+.Sample output
+----
+[root@compute01 ~]# tcpdump -envvi eth2 icmp
 dropped privs to tcpdump
 tcpdump: listening on eth2, link-type EN10MB (Ethernet), snapshot length 262144 bytes
-10:36:22.673988 52:54:00:02:33:fe > fa:16:3e:43:94:db, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 11758, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.9 > 192.168.51.181: ICMP echo request, id 3, seq 1, length 64
-10:36:23.703685 52:54:00:02:33:fe > fa:16:3e:43:94:db, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 12225, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.9 > 192.168.51.181: ICMP echo request, id 3, seq 2, length 64
-10:36:24.727617 52:54:00:02:33:fe > fa:16:3e:43:94:db, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 12345, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.9 > 192.168.51.181: ICMP echo request, id 3, seq 3, length 64
-^C
-3 packets captured
-3 packets received by filter
-0 packets dropped by kernel
+07:57:48.601573 52:54:00:02:33:fe > fa:16:3e:5e:74:ec, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 15655, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.51.183: ICMP echo request, id 7, seq 1, length 64
+07:57:49.608154 52:54:00:02:33:fe > fa:16:3e:5e:74:ec, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 16610, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.51.183: ICMP echo request, id 7, seq 2, length 64
+07:57:50.632466 52:54:00:02:33:fe > fa:16:3e:5e:74:ec, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 63, id 17148, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.51.183: ICMP echo request, id 7, seq 3, length 64
+[root@compute01 ~]# 
 
-[student@workstation ~]$ ping 192.168.51.181 -c 3
-PING 192.168.51.181 (192.168.51.181) 56(84) bytes of data.
 
---- 192.168.51.181 ping statistics ---
-3 packets transmitted, 0 received, 100% packet loss, time 2067ms
+[student@workstation ~]$ ping 192.168.51.183 -c 3
+PING 192.168.51.183 (192.168.51.183) 56(84) bytes of data.
+
+--- 192.168.51.183 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2032ms
+
+[student@workstation ~]$ 
 ----
 +
-Observe that ICMP echo requests arriving at the VM.
-The presence of ICMP echo requests reaching the external NIC on the compute VM indicates the proper functioning of the Distributed Virtual Router (DVR).
-However, observe that echo requests are not receiving the echo replies on the director VM.
+* Observe that ICMP echo requests arriving at the VM.
+* The presence of ICMP echo requests reaching the external NIC on the compute VM indicates the proper functioning of the Distributed Virtual Router (DVR).
+* However, observe that echo requests are not receiving the echo replies on the workstation VM.
 
-7. Determine the tap interface used for the instance on the compute VM.
+. Determine the tap interface used for the instance on the compute VM.
+
+. Run below command as **student** user on **workstation** vm
 +
+[source, bash]
+----
+oc exec -n openstack openstackclient -- openstack port list --server scenario-bfx020-vm
+----
++
+.Sample output
 ----
 [student@workstation ~]$ oc exec -n openstack openstackclient -- openstack port list --server scenario-bfx020-vm
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
 | ID                                   | Name | MAC Address       | Fixed IP Addresses                                                             | Status |
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
-| a9b701ad-2aae-4893-aa99-683ece2b3fda |      | fa:16:3e:40:9d:96 | ip_address='192.168.120.156', subnet_id='1eeeac8a-8f1f-40ec-b03d-b88999d94fc3' | ACTIVE |
+| b3a5ede9-8e32-4bb4-bf75-164857a9d5bc |      | fa:16:3e:7b:72:5e | ip_address='192.168.120.101', subnet_id='e361339e-16a0-4378-af96-7ebae09d6bb0' | ACTIVE |
 +--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+[student@workstation ~]$ 
 ----
-The preceding output can differ in your environment.
-The tap interface name is tap<initial part of port ID>. Refer to the Additional Information page for more details.
-Here tap interface name is tapa9b701ad-2a.
-
-8. Run ip l show command on compute VM.
 +
+* The preceding output can differ in your environment.
+* The tap interface name is tap<initial part of port ID>. 
+* Here tap interface name is tapb3a5ede9-8e
+* Determine this for your lab environment.
+
+. Run `ip link show` command for the tap interface on **compute** VM.
++
+.Sample output
 ----
-[root@compute02 ~]# ip l show tapa9b701ad-2a
-23: tapa9b701ad-2a: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1442 qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
-    link/ether fe:16:3e:40:9d:96 brd ff:ff:ff:ff:ff:ff
+[root@compute01 ~]# ip link show tapb3a5ede9-8e
+14: tapb3a5ede9-8e: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1442 qdisc noqueue master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether fe:16:3e:7b:72:5e brd ff:ff:ff:ff:ff:ff
+[root@compute01 ~]# 
 ----
 
-9. Initiate a tcpdump on tap interface on the compute VM and try to ping the instance from another terminal from the director VM.
+. Initiate a **tcpdump** on tap interface on the **compute** VM and try to **ping** the instance from another terminal from the **workstation** VM.
 +
+.Sample output
 ----
-[root@compute02 ~]# tcpdump -envvi tapa9b701ad-2a
+[root@compute01 ~]# tcpdump -envvi tapb3a5ede9-8e
 dropped privs to tcpdump
-tcpdump: listening on tapa9b701ad-2a, link-type EN10MB (Ethernet), snapshot length 262144 bytes
-10:40:35.631285 fa:16:3e:0e:8d:a5 > fa:16:3e:40:9d:96, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 5048, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.9 > 192.168.120.156: ICMP echo request, id 4, seq 1, length 64
-10:40:36.631628 fa:16:3e:0e:8d:a5 > fa:16:3e:40:9d:96, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 5789, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.9 > 192.168.120.156: ICMP echo request, id 4, seq 2, length 64
-10:40:37.655643 fa:16:3e:0e:8d:a5 > fa:16:3e:40:9d:96, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 6801, offset 0, flags [DF], proto ICMP (1), length 84)
-    172.25.250.9 > 192.168.120.156: ICMP echo request, id 4, seq 3, length 64
+tcpdump: listening on tapb3a5ede9-8e, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+08:08:15.375307 fa:16:3e:4a:0e:9b > fa:16:3e:7b:72:5e, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 12415, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.120.101: ICMP echo request, id 8, seq 1, length 64
+08:08:16.424532 fa:16:3e:4a:0e:9b > fa:16:3e:7b:72:5e, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 13111, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.120.101: ICMP echo request, id 8, seq 2, length 64
+08:08:17.448621 fa:16:3e:4a:0e:9b > fa:16:3e:7b:72:5e, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 62, id 13963, offset 0, flags [DF], proto ICMP (1), length 84)
+    172.25.250.9 > 192.168.120.101: ICMP echo request, id 8, seq 3, length 64
 ^C
 3 packets captured
 3 packets received by filter
 0 packets dropped by kernel
+[root@compute01 ~]# 
 
-[student@workstation ~]$ ping 192.168.51.181 -c 3
-PING 192.168.51.181 (192.168.51.181) 56(84) bytes of data.
 
---- 192.168.51.181 ping statistics ---
-3 packets transmitted, 0 received, 100% packet loss, time 2044ms
+[student@workstation ~]$ ping 192.168.51.183 -c 3
+PING 192.168.51.183 (192.168.51.183) 56(84) bytes of data.
+
+--- 192.168.51.183 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2067ms
+
+[student@workstation ~]$ 
 ----
-Successful delivery of the echo request to the tap interface linked with the instance indicates that the network path and connectivity mechanisms are operating correctly.
++
+* Successful delivery of the echo request to the tap interface linked with the instance indicates that the network path and connectivity mechanisms are operating correctly.
 
-All indicators appear satisfactory from the Neutron perspective. The underlying networking infrastructure, including OVN components, is functioning as intended.
+* All indicators appear satisfactory from the Neutron perspective. The underlying networking infrastructure, including OVN components, is functioning as intended.
 
-It appeared that the virtual machine (VM) failed to generate a reply when the echo request reached it. The problem might reside within the VM internal configuration or its behavior towards the incoming requests. Access the instance's console for further investigation on this issue.
+* It appeared that the virtual machine (VM) failed to generate a reply when the echo request reached it. 
 
+* The problem might reside within the VM internal configuration or its behavior towards the incoming requests. 
 
-
-
+* Access the instance's console for further investigation on this issue.

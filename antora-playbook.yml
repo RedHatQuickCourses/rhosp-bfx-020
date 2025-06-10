@@ -1,6 +1,6 @@
 site:
-  title: "RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors"
-  start_page: rhosp-bfx022::index.adoc
+  title: "RHOSP Networking Break-fix Practice - 2"
+  start_page: rhosp-bfx-020::index.adoc
 
 content:
   sources:

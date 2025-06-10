@@ -1,100 +1,78 @@
 = Guided solution (page 2)
 
-Connect to the workstation VM's console to access the instance's console
+**Connect to the workstation VM's GUI console to access the instance's console**
 
-Refer to the Access instance’s console instructions under Additional information section of Break-fix Activity page.
-
-1. From GUI console of workstation, connect to director VM and get the instance's console URL
+. From GUI console of workstation, connect to workstation VM and get the instance's console URL
 +
+[source, bash]
+----
+oc exec -n openstack openstackclient -- openstack console url show scenario-bfx020-vm
+----
++
+.Sample output
 ----
 [student@workstation ~]$ oc exec -n openstack openstackclient -- openstack console url show scenario-bfx020-vm
 +----------+-----------------------------------------------------------------------------------------------------------------------------------------+
 | Field    | Value                                                                                                                                   |
 +----------+-----------------------------------------------------------------------------------------------------------------------------------------+
-| protocol | novnc                                                                                                                                   |
-| url      | https://nova-novncproxy-cell1-public-openstack.apps.ocp4.example.com/vnc_lite.html?path=%3Ftoken%3D2cf5e980-7d85-4a90-9884-d7c621c2a9dc |
+| protocol | vnc                                                                                                                                     |
+| type     | novnc                                                                                                                                   |
+| url      | https://nova-novncproxy-cell1-public-openstack.apps.ocp4.example.com/vnc_lite.html?path=%3Ftoken%3D3d15f4dd-7438-4d06-ba01-1926f3b7b233 |
 +----------+-----------------------------------------------------------------------------------------------------------------------------------------+
+[student@workstation ~]$ 
 ----
-The preceding output can differ in your environment.
++
+NOTE: The command is to be run from a terminal within the GUI console of workstation VM. 
 
-2. Click the link in the output of above command to access the instance's console from workstation VM console web browser.
+. Click the link in the output of above command to access the instance's console in a web browser **from the workstation VM's GUI console**.
 +
 image::RHOSP.png[]
 +
-You might see the No bootable device boot failure message, indicates the VM did not boot successfully. This indicates that the image being utilized is corrupted.
+* You might see the No bootable device boot failure message, indicates the VM did not boot successfully. 
+* This indicates that the image being utilized is corrupted.
 
-3. To resolve this issue, begin by deleting the problematic server.
+. To resolve this issue, begin by deleting the problematic server.
 +
+[source, bash]
 ----
-[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server delete scenario-bfx020-vm
+oc exec -n openstack openstackclient -- openstack server delete scenario-bfx020-vm
 ----
++
 
-4. Recreate the instance, this time using the cirros image, which is a lightweight and commonly used image for testing purposes.
+. Recreate the instance, this time using the cirros image, which is a lightweight and commonly used image for testing purposes.
 +
+[source, bash]
 ----
-[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack server create --image cirros-0.5.2-x86_64 --flavor m1.small --key-name scenario-bfx020-key --nic net-id=scenario-bfx020-network --security-group scenario-bfx020-sg scenario-bfx020-vm
+oc exec -n openstack openstackclient -- openstack server create --image cirros-0.5.2-x86_64 --flavor m1.small --key-name scenario-bfx020-key --nic net-id=scenario-bfx020-network --security-group scenario-bfx020-sg scenario-bfx020-vm
 ----
++
+Run the above command as student user on workstation vm.
 
-5. Get the floating IP for the newly created instance, enabling external access and communication.
+. Get the floating IP for the newly created instance, enabling external access and communication.
 +
+[source, bash]
+----
+oc exec -n openstack openstackclient -- openstack floating ip list
+----
++
+.Sample output
 ----
 [student@workstation ~]$ oc exec -n openstack openstackclient -- openstack floating ip list
 +--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
 | ID                                   | Floating IP Address | Fixed IP Address | Port | Floating Network                     | Project                          |
 +--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
-| 11290596-ad3e-4688-a791-5d12fa85c67b | 192.168.51.181      | None             | None | b2f70670-883c-44ed-9cd3-9be361430dc7 | 0192bf49efca46bf932847c75117578e |
+| b767f855-9926-4026-aa7d-bb9d8cd244f5 | 192.168.51.183      | None             | None | 7f810d7c-9334-4d79-85f6-9b347c336166 | 7ac1618d984947c0bfcbf713a94fed4a |
 +--------------------------------------+---------------------+------------------+------+--------------------------------------+----------------------------------+
+[student@workstation ~]$ 
 ----
-Floating IP in preceding output can differ in your environment.
-
-6. Attach a floating IP to the newly created instance.
 +
-----
-[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack port list --server scenario-bfx020-vm
-+--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
-| ID                                   | Name | MAC Address       | Fixed IP Addresses                                                             | Status |
-+--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
-| a9b701ad-2aae-4893-aa99-683ece2b3fda |      | fa:16:3e:40:9d:96 | ip_address='192.168.120.156', subnet_id='1eeeac8a-8f1f-40ec-b03d-b88999d94fc3' | ACTIVE |
-+--------------------------------------+------+-------------------+--------------------------------------------------------------------------------+--------+
+Floating IP in preceding output may differ in your environment.
 
-[student@workstation ~]$ oc exec -n openstack openstackclient -- openstack floating ip set --port a9b701ad-2aae-4893-aa99-683ece2b3fda 192.168.51.181
-----
-The preceding output can differ in your environment.
-
-7. Test the connectivity by attempting ICMP ping and SSH access to the instance.
+. Attach a floating IP to the newly created instance.
 +
+[source, bash]
 ----
-[student@workstation ~]$ ping 192.168.51.181 -c 1
-PING 192.168.51.181 (192.168.51.181) 56(84) bytes of data.
-64 bytes from 192.168.51.181: icmp_seq=1 ttl=63 time=4.77 ms
-
---- 192.168.51.181 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 4.770/4.770/4.770/0.000 ms
-
-[student@workstation ~]$ ssh -i /home/student/osp_training/.scenariobfx020/scenario-bfx020-key.pem cirros@192.168.51.181
-Warning: Permanently added '192.168.51.181' (ECDSA) to the list of known hosts.
-sign_and_send_pubkey: no mutual signature supported
-cirros@192.168.51.181's password:
-$ cat /etc/cirros/version
-0.5.2
-$ exit
-Connection to 192.168.51.181 closed.
+oc exec -n openstack openstackclient -- openstack server add floating ip scenario-bfx020-vm floating.ip.in.earlier.output
 ----
-Verify that these actions are successful, indicating that the instance created using the new image is now accessible.
-
-== Evaluation
-
-As the stack user on the director machine, use the lab command to grade your work. Correct any reported failures and rerun the command until successful.
-----
-[stack@director ~]$ lab grade bfx020
-----
-
-== Finish
-
-Run the lab finish command to complete this exercise. This step is important to ensure that resources from previous exercises do not impact upcoming exercises.
-----
-[stack@director ~]$ lab finish bfx020
-----
-This concludes this section.
-
++
+**Replace the string floating.ip.in.earlier.output with appropriate value.**

@@ -1,5 +1,5 @@
-name: rhosp-bfx020
-title: "RHOSP Networking Break-fix Practice - Diagnosing Destination Host Unreachable and No Route to Host Errors"
+name: rhosp-bfx-020
+title: "RHOSP Networking Break-fix Practice - 2"
 version: 1
 nav:
 - modules/ROOT/nav.adoc

@@ -1,4 +1,4 @@
-= Red Hat OpenStack Platform: Break-fix Practice - 2
+= Troubleshooting instance connectivity issue in Red Hat OpenStack Platform 18
 :navtitle: Home
 
 == Addressing Connection Timed Out for SSH with Working Ping

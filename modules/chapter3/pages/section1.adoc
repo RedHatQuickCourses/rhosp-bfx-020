@@ -2,7 +2,7 @@
 
 *Checke ARP Cache*:
 
-* Reviewed the ARP cache on the client system (director VM) initiating the connection.
+* Reviewed the ARP cache on the client system (workstation VM) initiating the connection.
 
 * Identified an entry in the ARP cache, confirming ARP functionality.
 
